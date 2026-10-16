@@ -1,32 +1,49 @@
+import {initializeApp} from "firebase-admin/app";
+import {Firestore, getFirestore} from "firebase-admin/firestore";
+import {setGlobalOptions} from "firebase-functions";
+import * as logger from "firebase-functions/logger";
+import {
+  CallableRequest,
+  HttpsError,
+  onCall,
+} from "firebase-functions/v2/https";
+import {onSchedule} from "firebase-functions/v2/scheduler";
+import * as connections from "./connections";
+import * as contacts from "./contacts";
+import * as messages from "./messages";
+import {processDueMessages} from "./scheduled-messages";
+
+setGlobalOptions({maxInstances: 10});
+
+initializeApp();
+const db = getFirestore();
+
+type Handler<T> = (db: Firestore, uid: string, data: unknown) => Promise<T>;
+
 /**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
+ * Wraps a handler so it only runs for authenticated users and receives the
+ * caller's UID from the verified Auth token (never from the payload).
  */
+const authenticatedCall = <T>(handler: Handler<T>) =>
+  onCall(async (request: CallableRequest) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "Faça login para continuar.");
+    }
+    return handler(db, request.auth.uid, request.data);
+  });
 
-import { setGlobalOptions } from "firebase-functions";
-// import {onRequest} from "firebase-functions/https";
-// import * as logger from "firebase-functions/logger";
+export const createContact = authenticatedCall(contacts.createContact);
+export const updateContact = authenticatedCall(contacts.updateContact);
+export const deleteContact = authenticatedCall(contacts.deleteContact);
+export const deleteConnection = authenticatedCall(connections.deleteConnection);
+export const createMessage = authenticatedCall(messages.createMessage);
+export const updateMessage = authenticatedCall(messages.updateMessage);
+export const deleteMessage = authenticatedCall(messages.deleteMessage);
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
-
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
-
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+export const processScheduledMessages = onSchedule(
+  {schedule: "every 1 minutes", retryCount: 0},
+  async () => {
+    const result = await processDueMessages(db);
+    logger.info("Scheduled messages processed", result);
+  },
+);
