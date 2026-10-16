@@ -23,3 +23,25 @@ export const parseDateTimeLocal = (value: string): Date | null => {
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' })
 
 export const formatDate = (date: Date | null): string => (date ? dateFormatter.format(date) : '—')
+
+const timeFormatter = new Intl.DateTimeFormat('pt-BR', { timeStyle: 'short' })
+const dayMonthFormatter = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short' })
+const fullDayFormatter = new Intl.DateTimeFormat('pt-BR', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+})
+
+const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
+/** Short, relative-aware label: "Hoje, 17:01", "Amanhã, 09:00", "20 de dez., 10:30". */
+export const formatRelativeDateTime = (date: Date | null, now = new Date()): string => {
+  if (!date) return '—'
+  const days = Math.round((startOfDay(date).getTime() - startOfDay(now).getTime()) / 86_400_000)
+  const time = timeFormatter.format(date)
+  if (days === 0) return `Hoje, ${time}`
+  if (days === -1) return `Ontem, ${time}`
+  if (days === 1) return `Amanhã, ${time}`
+  const day = date.getFullYear() === now.getFullYear() ? dayMonthFormatter : fullDayFormatter
+  return `${day.format(date)}, ${time}`
+}
