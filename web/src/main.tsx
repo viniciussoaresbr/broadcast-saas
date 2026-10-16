@@ -8,6 +8,7 @@ import '@fontsource-variable/geist'
 import './index.css'
 import App from './App.tsx'
 import AuthProvider from './components/AuthProvider.tsx'
+import FeedbackProvider from './components/FeedbackProvider.tsx'
 import { theme } from './theme.ts'
 
 createRoot(document.getElementById('root')!).render(
@@ -19,9 +20,11 @@ createRoot(document.getElementById('root')!).render(
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AuthProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
+          <FeedbackProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </FeedbackProvider>
         </AuthProvider>
       </ThemeProvider>
     </StyledEngineProvider>
