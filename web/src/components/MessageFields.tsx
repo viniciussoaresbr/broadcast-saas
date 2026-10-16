@@ -109,11 +109,14 @@ const MessageFields = ({
             </label>
           ))}
         </div>
-        {errors.contactIds && (
-          <FormHelperText id={ids.recipientsError} error className="mt-1.5">
-            {errors.contactIds}
-          </FormHelperText>
-        )}
+        {/* Always rendered so the error line doesn't shift the form. */}
+        <FormHelperText
+          id={ids.recipientsError}
+          error={Boolean(errors.contactIds)}
+          className="mt-1.5"
+        >
+          {errors.contactIds ?? ' '}
+        </FormHelperText>
       </fieldset>
 
       <TextField
@@ -174,8 +177,21 @@ const MessageFields = ({
           onChange={event => onChange({ scheduledAt: event.target.value })}
           error={Boolean(errors.scheduledAt)}
           helperText={
-            errors.scheduledAt ??
-            'Horário local. O envio é processado em até cerca de 1 minuto após o horário.'
+            // Hint and error share one grid cell, so the line keeps the height
+            // of the taller text whichever one is visible.
+            <span className="grid">
+              <span
+                className={`col-start-1 row-start-1 ${errors.scheduledAt ? 'invisible' : ''}`}
+              >
+                Horário local. O envio é processado em até cerca de 1 minuto
+                após o horário.
+              </span>
+              <span
+                className={`col-start-1 row-start-1 ${errors.scheduledAt ? '' : 'invisible'}`}
+              >
+                {errors.scheduledAt}
+              </span>
+            </span>
           }
           disabled={disabled}
           slotProps={{
