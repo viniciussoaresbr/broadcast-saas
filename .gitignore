@@ -1,0 +1,23 @@
+# Dependencies and builds
+node_modules/
+dist/
+functions/lib/
+
+# Environment (keep only the examples)
+.env
+.env.*
+!.env.example
+
+# Firebase
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+database-debug.log*
+pubsub-debug.log*
+
+# Logs and OS
+*.log
+.DS_Store
+
+CLAUDE.md
