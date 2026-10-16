@@ -53,7 +53,7 @@ const ConnectionFormDialog = ({
         onChange={event => setName(event.target.value)}
         error={Boolean(nameError)}
         helperText={nameError ?? `${name.trim().length}/${NAME_MAX_LENGTH}`}
-        slotProps={{ htmlInput: { maxLength: NAME_MAX_LENGTH + 10 } }}
+        slotProps={{ htmlInput: { maxLength: NAME_MAX_LENGTH } }}
         required
         autoFocus
       />

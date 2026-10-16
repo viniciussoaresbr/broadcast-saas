@@ -10,6 +10,7 @@ import { useAsyncAction } from '../hooks/useAsyncAction';
 import AuthLayout from '../layouts/AuthLayout';
 import { signUp } from '../services/auth-service';
 import {
+  NAME_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
   validateEmail,
   validateName,
@@ -75,6 +76,7 @@ const RegisterPage = () => {
           onChange={event => setField('name')(event.target.value)}
           error={Boolean(errors.name)}
           helperText={errors.name ?? ' '}
+          slotProps={{ htmlInput: { maxLength: NAME_MAX_LENGTH } }}
           required
           autoFocus
         />
