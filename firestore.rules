@@ -1,18 +1,57 @@
-rules_version='2'
+rules_version = '2';
 
+// Multi-tenant isolation: every document carries the owner's Auth UID in
+// `ownerId`, and a client can only touch documents whose `ownerId` is its own.
+//
+// Write strategy:
+// - connections: created and renamed directly by the client (validated here);
+//   deletion goes through the `deleteConnection` Cloud Function, which removes
+//   related contacts and messages so no orphan documents are left behind.
+// - contacts and messages: written only by Cloud Functions (Admin SDK), which
+//   validate ownership and relations (phone uniqueness per connection,
+//   recipients belonging to the connection) that rules cannot express.
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2026, 11, 15);
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(data) {
+      return isSignedIn() && data.ownerId == request.auth.uid;
+    }
+
+    function isValidName(name) {
+      return name is string
+        && name.trim().size() > 0
+        && name.size() <= 60;
+    }
+
+    match /connections/{connectionId} {
+      allow read: if isOwner(resource.data);
+
+      allow create: if isOwner(request.resource.data)
+        && request.resource.data.keys().hasOnly(['ownerId', 'name', 'createdAt', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['ownerId', 'name', 'createdAt', 'updatedAt'])
+        && isValidName(request.resource.data.name)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+
+      allow update: if isOwner(resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'updatedAt'])
+        && isValidName(request.resource.data.name)
+        && request.resource.data.updatedAt == request.time;
+
+      allow delete: if false;
+    }
+
+    match /contacts/{contactId} {
+      allow read: if isOwner(resource.data);
+      allow write: if false;
+    }
+
+    match /messages/{messageId} {
+      allow read: if isOwner(resource.data);
+      allow write: if false;
     }
   }
 }
