@@ -1,40 +1,48 @@
-import { useState } from 'react'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
-import Typography from '@mui/material/Typography'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined'
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
-import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined'
-import ConfirmDialog from '../components/ConfirmDialog'
-import ContactFormDialog from '../components/ContactFormDialog'
-import EmptyState from '../components/EmptyState'
-import Initials from '../components/Initials'
-import ListState from '../components/ListState'
-import { useConnectionContext } from '../hooks/useConnectionContext'
-import { useFeedback } from '../hooks/useFeedback'
-import { createContact, deleteContact, updateContact } from '../services/contact-service'
-import type { Contact } from '../types'
-import { formatPhone } from '../utils/phone'
+import { useState } from 'react';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
+import ConfirmDialog from '../components/ConfirmDialog';
+import ContactFormDialog from '../components/ContactFormDialog';
+import EmptyState from '../components/EmptyState';
+import Initials from '../components/Initials';
+import ListState from '../components/ListState';
+import { useConnectionContext } from '../hooks/useConnectionContext';
+import { useFeedback } from '../hooks/useFeedback';
+import {
+  createContact,
+  deleteContact,
+  updateContact,
+} from '../services/contact-service';
+import type { Contact } from '../types';
+import { formatPhone } from '../utils/phone';
 
 type DialogState =
   | { type: 'create' }
   | { type: 'edit'; contact: Contact }
   | { type: 'delete'; contact: Contact }
-  | null
+  | null;
 
 const ContactsPage = () => {
-  const { connection, contacts } = useConnectionContext()
-  const notify = useFeedback()
-  const [dialog, setDialog] = useState<DialogState>(null)
-  const closeDialog = () => setDialog(null)
+  const { connection, contacts } = useConnectionContext();
+  const notify = useFeedback();
+  const [dialog, setDialog] = useState<DialogState>(null);
+  const closeDialog = () => setDialog(null);
 
   const createButton = (
-    <Button variant="contained" startIcon={<AddIcon />} onClick={() => setDialog({ type: 'create' })}>
+    <Button
+      variant="contained"
+      startIcon={<AddIcon />}
+      onClick={() => setDialog({ type: 'create' })}
+    >
       Novo contato
     </Button>
-  )
+  );
 
   return (
     <section className="flex flex-col gap-4" aria-labelledby="contacts-title">
@@ -62,9 +70,9 @@ const ContactsPage = () => {
           />
         }
       >
-        {(items) => (
+        {items => (
           <ul className="flex flex-col">
-            {items.map((contact) => (
+            {items.map(contact => (
               <li
                 key={contact.id}
                 className="flex items-center gap-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-tone-100 sm:px-3"
@@ -74,7 +82,9 @@ const ContactsPage = () => {
                   <span className="truncate text-[0.9375rem] font-medium text-ink sm:flex-1">
                     {contact.name}
                   </span>
-                  <span className="tabular text-sm text-muted sm:w-40">{formatPhone(contact.phone)}</span>
+                  <span className="tabular text-sm text-muted sm:w-40">
+                    {formatPhone(contact.phone)}
+                  </span>
                 </div>
                 <div className="flex shrink-0 gap-0.5">
                   <Tooltip title="Editar">
@@ -105,9 +115,9 @@ const ContactsPage = () => {
       {dialog?.type === 'create' && (
         <ContactFormDialog
           open
-          onSave={async (values) => {
-            await createContact({ connectionId: connection.id, ...values })
-            notify('Contato adicionado.')
+          onSave={async values => {
+            await createContact({ connectionId: connection.id, ...values });
+            notify('Contato adicionado.');
           }}
           onClose={closeDialog}
         />
@@ -116,9 +126,9 @@ const ContactsPage = () => {
         <ContactFormDialog
           open
           initialValues={dialog.contact}
-          onSave={async (values) => {
-            await updateContact({ contactId: dialog.contact.id, ...values })
-            notify('Contato atualizado.')
+          onSave={async values => {
+            await updateContact({ contactId: dialog.contact.id, ...values });
+            notify('Contato atualizado.');
           }}
           onClose={closeDialog}
         />
@@ -129,9 +139,12 @@ const ContactsPage = () => {
           title="Excluir contato?"
           description={
             <>
-              <strong className="font-semibold text-ink">{dialog.contact.name}</strong> será
-              removido desta conexão e das mensagens agendadas. Mensagens agendadas sem outros
-              destinatários serão excluídas. O histórico de mensagens enviadas é mantido.
+              <strong className="font-semibold text-ink">
+                {dialog.contact.name}
+              </strong>{' '}
+              será removido desta conexão e das mensagens agendadas. Mensagens
+              agendadas sem outros destinatários serão excluídas. O histórico de
+              mensagens enviadas é mantido.
             </>
           }
           confirmLabel="Excluir contato"
@@ -141,7 +154,7 @@ const ContactsPage = () => {
         />
       )}
     </section>
-  )
-}
+  );
+};
 
-export default ContactsPage
+export default ContactsPage;

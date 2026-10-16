@@ -1,50 +1,46 @@
-import {
-  FieldValue,
-  Firestore,
-  Timestamp,
-} from "firebase-admin/firestore";
-import {HttpsError} from "firebase-functions/v2/https";
+import { FieldValue, Firestore, Timestamp } from 'firebase-admin/firestore';
+import { HttpsError } from 'firebase-functions/v2/https';
 import {
   assertContactsInConnection,
   assertOwned,
   getOwnedConnection,
-} from "./lib/ownership";
+} from './lib/ownership';
 import {
   asPayload,
   parseContactIds,
   parseContent,
   parseId,
   parseScheduledAt,
-} from "./lib/validation";
+} from './lib/validation';
 
 /** Fields that depend on whether the message is sent now or scheduled. */
 const deliveryFields = (scheduledAt: number | null) =>
-  scheduledAt === null ?
-    {
-      status: "sent",
-      scheduledAt: null,
-      sentAt: FieldValue.serverTimestamp(),
-    } :
-    {
-      status: "scheduled",
-      scheduledAt: Timestamp.fromMillis(scheduledAt),
-      sentAt: null,
-    };
+  scheduledAt === null
+    ? {
+        status: 'sent',
+        scheduledAt: null,
+        sentAt: FieldValue.serverTimestamp(),
+      }
+    : {
+        status: 'scheduled',
+        scheduledAt: Timestamp.fromMillis(scheduledAt),
+        sentAt: null,
+      };
 
 export const createMessage = async (
   db: Firestore,
   uid: string,
   data: unknown,
   now = Date.now(),
-): Promise<{id: string}> => {
+): Promise<{ id: string }> => {
   const payload = asPayload(data);
-  const connectionId = parseId(payload.connectionId, "connectionId");
+  const connectionId = parseId(payload.connectionId, 'connectionId');
   const contactIds = parseContactIds(payload.contactIds);
   const content = parseContent(payload.content);
   const scheduledAt = parseScheduledAt(payload.scheduledAt, now);
-  const ref = db.collection("messages").doc();
+  const ref = db.collection('messages').doc();
 
-  await db.runTransaction(async (tx) => {
+  await db.runTransaction(async tx => {
     await getOwnedConnection(db, tx, uid, connectionId);
     await assertContactsInConnection(db, tx, uid, connectionId, contactIds);
     tx.create(ref, {
@@ -58,7 +54,7 @@ export const createMessage = async (
     });
   });
 
-  return {id: ref.id};
+  return { id: ref.id };
 };
 
 /**
@@ -72,22 +68,22 @@ export const updateMessage = async (
   now = Date.now(),
 ): Promise<void> => {
   const payload = asPayload(data);
-  const messageId = parseId(payload.messageId, "messageId");
+  const messageId = parseId(payload.messageId, 'messageId');
   const contactIds = parseContactIds(payload.contactIds);
   const content = parseContent(payload.content);
   const scheduledAt = parseScheduledAt(payload.scheduledAt, now);
-  const ref = db.collection("messages").doc(messageId);
+  const ref = db.collection('messages').doc(messageId);
 
-  await db.runTransaction(async (tx) => {
+  await db.runTransaction(async tx => {
     const message = assertOwned(
       await tx.get(ref),
       uid,
-      "Mensagem não encontrada.",
+      'Mensagem não encontrada.',
     );
-    if (message.status !== "scheduled") {
+    if (message.status !== 'scheduled') {
       throw new HttpsError(
-        "failed-precondition",
-        "Mensagens já enviadas não podem ser editadas.",
+        'failed-precondition',
+        'Mensagens já enviadas não podem ser editadas.',
       );
     }
     await assertContactsInConnection(
@@ -113,11 +109,11 @@ export const deleteMessage = async (
   data: unknown,
 ): Promise<void> => {
   const payload = asPayload(data);
-  const messageId = parseId(payload.messageId, "messageId");
-  const ref = db.collection("messages").doc(messageId);
+  const messageId = parseId(payload.messageId, 'messageId');
+  const ref = db.collection('messages').doc(messageId);
 
-  await db.runTransaction(async (tx) => {
-    assertOwned(await tx.get(ref), uid, "Mensagem não encontrada.");
+  await db.runTransaction(async tx => {
+    assertOwned(await tx.get(ref), uid, 'Mensagem não encontrada.');
     tx.delete(ref);
   });
 };

@@ -1,12 +1,12 @@
-import type { ReactNode } from 'react'
-import Typography from '@mui/material/Typography'
-import { Wordmark } from '../components/BrandMark'
+import type { ReactNode } from 'react';
+import Typography from '@mui/material/Typography';
+import { Wordmark } from '../components/BrandMark';
 
 type AuthLayoutProps = {
-  title: string
-  subtitle?: string
-  children: ReactNode
-}
+  title: string;
+  subtitle?: string;
+  children: ReactNode;
+};
 
 /** Concentric waves from the lamp in the corner: the brand mark, enlarged. */
 const SignalWaves = () => (
@@ -29,7 +29,7 @@ const SignalWaves = () => (
     ))}
     <circle cx="160" cy="440" r="34" fill="currentColor" opacity="0.9" />
   </svg>
-)
+);
 
 const AuthLayout = ({ title, subtitle, children }: AuthLayoutProps) => (
   <div className="grid min-h-dvh bg-surface lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
@@ -57,12 +57,12 @@ const AuthLayout = ({ title, subtitle, children }: AuthLayoutProps) => (
           Uma mensagem, todos os seus contatos.
         </p>
         <p className="mt-5 mb-0 text-base leading-relaxed text-white/85">
-          Escreva uma vez, escolha quem recebe e envie agora ou na hora marcada. O agendamento roda
-          no servidor, mesmo com esta aba fechada.
+          Escreva uma vez, escolha quem recebe e envie agora ou na hora marcada.
+          O agendamento roda no servidor, mesmo com esta aba fechada.
         </p>
       </div>
     </aside>
   </div>
-)
+);
 
-export default AuthLayout
+export default AuthLayout;

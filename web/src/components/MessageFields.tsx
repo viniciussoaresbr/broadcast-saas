@@ -1,28 +1,32 @@
-import Checkbox from '@mui/material/Checkbox'
-import FormHelperText from '@mui/material/FormHelperText'
-import TextField from '@mui/material/TextField'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import EventOutlinedIcon from '@mui/icons-material/EventOutlined'
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
-import type { DeliveryMode, MessageFormErrors, MessageFormValues } from '../hooks/useMessageForm'
-import type { Contact } from '../types'
-import { toDateTimeLocalValue } from '../utils/date'
-import { formatPhone } from '../utils/phone'
-import { CONTENT_MAX_LENGTH } from '../utils/validation'
+import Checkbox from '@mui/material/Checkbox';
+import FormHelperText from '@mui/material/FormHelperText';
+import TextField from '@mui/material/TextField';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
+import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import type {
+  DeliveryMode,
+  MessageFormErrors,
+  MessageFormValues,
+} from '../hooks/useMessageForm';
+import type { Contact } from '../types';
+import { toDateTimeLocalValue } from '../utils/date';
+import { formatPhone } from '../utils/phone';
+import { CONTENT_MAX_LENGTH } from '../utils/validation';
 
 type MessageFieldsProps = {
-  contacts: Contact[]
-  values: MessageFormValues
-  errors: MessageFormErrors
-  onChange: (patch: Partial<MessageFormValues>) => void
-  disabled?: boolean
+  contacts: Contact[];
+  values: MessageFormValues;
+  errors: MessageFormErrors;
+  onChange: (patch: Partial<MessageFormValues>) => void;
+  disabled?: boolean;
   /** Prefix for element IDs, so two instances can coexist on a page. */
-  idPrefix?: string
-}
+  idPrefix?: string;
+};
 
 const rowClass =
-  'flex cursor-pointer items-center gap-2 py-1 pr-3 pl-1 transition-colors hover:bg-tone-50 has-[:disabled]:cursor-default'
+  'flex cursor-pointer items-center gap-2 py-1 pr-3 pl-1 transition-colors hover:bg-tone-50 has-[:disabled]:cursor-default';
 
 /** Controlled fields shared by the composer and the edit dialog. */
 const MessageFields = ({
@@ -33,22 +37,24 @@ const MessageFields = ({
   disabled,
   idPrefix = 'message',
 }: MessageFieldsProps) => {
-  const selected = new Set(values.contactIds)
-  const allSelected = contacts.length > 0 && selected.size === contacts.length
+  const selected = new Set(values.contactIds);
+  const allSelected = contacts.length > 0 && selected.size === contacts.length;
   const ids = {
     recipientsError: `${idPrefix}-recipients-error`,
     delivery: `${idPrefix}-delivery`,
-  }
+  };
 
   const toggleContact = (contactId: string) =>
     onChange({
       contactIds: selected.has(contactId)
-        ? values.contactIds.filter((id) => id !== contactId)
+        ? values.contactIds.filter(id => id !== contactId)
         : [...values.contactIds, contactId],
-    })
+    });
 
   const toggleAll = () =>
-    onChange({ contactIds: allSelected ? [] : contacts.map((contact) => contact.id) })
+    onChange({
+      contactIds: allSelected ? [] : contacts.map(contact => contact.id),
+    });
 
   return (
     <div className="flex flex-col gap-5">
@@ -70,7 +76,9 @@ const MessageFields = ({
               : 'shadow-[0_0_0_1px_var(--color-tone-300)]'
           }`}
         >
-          <label className={`${rowClass} sticky top-0 z-[1] bg-surface shadow-[0_1px_0_var(--color-tone-200)]`}>
+          <label
+            className={`${rowClass} sticky top-0 z-[1] bg-surface shadow-[0_1px_0_var(--color-tone-200)]`}
+          >
             <Checkbox
               size="small"
               checked={allSelected}
@@ -78,9 +86,11 @@ const MessageFields = ({
               onChange={toggleAll}
               disabled={disabled}
             />
-            <span className="text-sm font-medium text-ink">Selecionar todos</span>
+            <span className="text-sm font-medium text-ink">
+              Selecionar todos
+            </span>
           </label>
-          {contacts.map((contact) => (
+          {contacts.map(contact => (
             <label key={contact.id} className={rowClass}>
               <Checkbox
                 size="small"
@@ -89,8 +99,12 @@ const MessageFields = ({
                 disabled={disabled}
               />
               <span className="flex min-w-0 flex-1 flex-wrap items-baseline justify-between gap-x-3">
-                <span className="min-w-0 truncate text-sm text-ink">{contact.name}</span>
-                <span className="tabular text-[0.8125rem] text-muted">{formatPhone(contact.phone)}</span>
+                <span className="min-w-0 truncate text-sm text-ink">
+                  {contact.name}
+                </span>
+                <span className="tabular text-[0.8125rem] text-muted">
+                  {formatPhone(contact.phone)}
+                </span>
               </span>
             </label>
           ))}
@@ -106,15 +120,22 @@ const MessageFields = ({
         label="Mensagem"
         name="message-content"
         value={values.content}
-        onChange={(event) => onChange({ content: event.target.value })}
+        onChange={event => onChange({ content: event.target.value })}
         error={Boolean(errors.content)}
-        helperText={errors.content ?? `${values.content.trim().length}/${CONTENT_MAX_LENGTH}`}
+        helperText={
+          errors.content ??
+          `${values.content.trim().length}/${CONTENT_MAX_LENGTH}`
+        }
         disabled={disabled}
         multiline
         minRows={4}
         maxRows={12}
         required
-        slotProps={{ formHelperText: { className: errors.content ? '' : 'tabular text-right' } }}
+        slotProps={{
+          formHelperText: {
+            className: errors.content ? '' : 'tabular text-right',
+          },
+        }}
       />
 
       <div className="flex flex-col gap-2">
@@ -126,7 +147,9 @@ const MessageFields = ({
           fullWidth
           size="small"
           value={values.mode}
-          onChange={(_, mode: DeliveryMode | null) => mode && onChange({ mode })}
+          onChange={(_, mode: DeliveryMode | null) =>
+            mode && onChange({ mode })
+          }
           aria-labelledby={ids.delivery}
           disabled={disabled}
         >
@@ -145,7 +168,7 @@ const MessageFields = ({
           name="message-scheduled-at"
           type="datetime-local"
           value={values.scheduledAt}
-          onChange={(event) => onChange({ scheduledAt: event.target.value })}
+          onChange={event => onChange({ scheduledAt: event.target.value })}
           error={Boolean(errors.scheduledAt)}
           helperText={
             errors.scheduledAt ??
@@ -154,13 +177,16 @@ const MessageFields = ({
           disabled={disabled}
           slotProps={{
             inputLabel: { shrink: true },
-            htmlInput: { min: toDateTimeLocalValue(new Date()), className: 'tabular' },
+            htmlInput: {
+              min: toDateTimeLocalValue(new Date()),
+              className: 'tabular',
+            },
           }}
           required
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default MessageFields
+export default MessageFields;

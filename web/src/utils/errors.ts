@@ -1,4 +1,4 @@
-import { FirebaseError } from 'firebase/app'
+import { FirebaseError } from 'firebase/app';
 
 const AUTH_MESSAGES: Record<string, string> = {
   'auth/invalid-credential': 'E-mail ou senha incorretos.',
@@ -9,9 +9,10 @@ const AUTH_MESSAGES: Record<string, string> = {
   'auth/user-disabled': 'Esta conta foi desativada.',
   'auth/email-already-in-use': 'Já existe uma conta com este e-mail.',
   'auth/weak-password': 'A senha é muito fraca.',
-  'auth/too-many-requests': 'Muitas tentativas. Aguarde um pouco e tente novamente.',
+  'auth/too-many-requests':
+    'Muitas tentativas. Aguarde um pouco e tente novamente.',
   'auth/network-request-failed': 'Falha de conexão. Verifique sua internet.',
-}
+};
 
 // Callable errors whose message is written for the user by the backend.
 const FUNCTION_CODES_WITH_USER_MESSAGE = new Set([
@@ -20,20 +21,21 @@ const FUNCTION_CODES_WITH_USER_MESSAGE = new Set([
   'functions/already-exists',
   'functions/failed-precondition',
   'functions/unauthenticated',
-])
+]);
 
-const GENERIC_MESSAGE = 'Algo deu errado. Tente novamente.'
+const GENERIC_MESSAGE = 'Algo deu errado. Tente novamente.';
 
 export const getErrorMessage = (error: unknown): string => {
-  if (!(error instanceof FirebaseError)) return GENERIC_MESSAGE
-  if (AUTH_MESSAGES[error.code]) return AUTH_MESSAGES[error.code]
+  if (!(error instanceof FirebaseError)) return GENERIC_MESSAGE;
+  if (AUTH_MESSAGES[error.code]) return AUTH_MESSAGES[error.code];
   if (FUNCTION_CODES_WITH_USER_MESSAGE.has(error.code)) {
     // The SDK appends the HTTP status, e.g. "Conexão não encontrada. [404]".
-    return error.message.replace(/\s*\[\d{3}\]$/, '')
+    return error.message.replace(/\s*\[\d{3}\]$/, '');
   }
-  if (error.code === 'permission-denied') return 'Você não tem permissão para acessar estes dados.'
+  if (error.code === 'permission-denied')
+    return 'Você não tem permissão para acessar estes dados.';
   if (error.code === 'unavailable' || error.code === 'functions/unavailable') {
-    return 'Serviço indisponível. Verifique sua conexão.'
+    return 'Serviço indisponível. Verifique sua conexão.';
   }
-  return GENERIC_MESSAGE
-}
+  return GENERIC_MESSAGE;
+};

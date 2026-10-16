@@ -1,14 +1,14 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
-import { ProtectedRoute, PublicOnlyRoute } from './components/RouteGuards'
-import AppLayout from './layouts/AppLayout'
-import BroadcastPage from './pages/BroadcastPage'
-import ConnectionPage from './pages/ConnectionPage'
-import ConnectionsPage from './pages/ConnectionsPage'
-import ContactsPage from './pages/ContactsPage'
-import ForgotPasswordPage from './pages/ForgotPasswordPage'
-import LoginPage from './pages/LoginPage'
-import NotFoundPage from './pages/NotFoundPage'
-import RegisterPage from './pages/RegisterPage'
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { ProtectedRoute, PublicOnlyRoute } from './components/RouteGuards';
+import AppLayout from './layouts/AppLayout';
+import BroadcastPage from './pages/BroadcastPage';
+import ConnectionPage from './pages/ConnectionPage';
+import ConnectionsPage from './pages/ConnectionsPage';
+import ContactsPage from './pages/ContactsPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import LoginPage from './pages/LoginPage';
+import NotFoundPage from './pages/NotFoundPage';
+import RegisterPage from './pages/RegisterPage';
 
 const App = () => (
   <Routes>
@@ -32,6 +32,6 @@ const App = () => (
 
     <Route path="*" element={<NotFoundPage />} />
   </Routes>
-)
+);
 
-export default App
+export default App;

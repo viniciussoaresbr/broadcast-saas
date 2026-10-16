@@ -10,9 +10,9 @@ import {
   where,
   type DocumentSnapshot,
   type Unsubscribe,
-} from 'firebase/firestore'
-import type { Connection } from '../types'
-import { db } from './firebase'
+} from 'firebase/firestore';
+import type { Connection } from '../types';
+import { db } from './firebase';
 import {
   callable,
   readDoc,
@@ -20,20 +20,20 @@ import {
   toDate,
   type OnData,
   type OnError,
-} from './firestore-utils'
+} from './firestore-utils';
 
-const connectionsRef = collection(db, 'connections')
+const connectionsRef = collection(db, 'connections');
 
 const toConnection = (snapshot: DocumentSnapshot): Connection => {
-  const data = readDoc(snapshot)
+  const data = readDoc(snapshot);
   return {
     id: snapshot.id,
     ownerId: data.ownerId,
     name: data.name,
     createdAt: toDate(data.createdAt),
     updatedAt: toDate(data.updatedAt),
-  }
-}
+  };
+};
 
 export const subscribeToConnections = (
   ownerId: string,
@@ -41,11 +41,15 @@ export const subscribeToConnections = (
   onError: OnError,
 ): Unsubscribe =>
   subscribeToQuery(
-    query(connectionsRef, where('ownerId', '==', ownerId), orderBy('createdAt', 'desc')),
+    query(
+      connectionsRef,
+      where('ownerId', '==', ownerId),
+      orderBy('createdAt', 'desc'),
+    ),
     toConnection,
     onData,
     onError,
-  )
+  );
 
 /**
  * Emits `null` when the connection does not exist. Security rules deny reads
@@ -58,29 +62,35 @@ export const subscribeToConnection = (
 ): Unsubscribe =>
   onSnapshot(
     doc(connectionsRef, connectionId),
-    (snapshot) => onData(snapshot.exists() ? toConnection(snapshot) : null),
+    snapshot => onData(snapshot.exists() ? toConnection(snapshot) : null),
     onError,
-  )
+  );
 
 /** Resolves to the new connection's ID. */
-export const createConnection = async (ownerId: string, name: string): Promise<string> => {
+export const createConnection = async (
+  ownerId: string,
+  name: string,
+): Promise<string> => {
   const created = await addDoc(connectionsRef, {
     ownerId,
     name: name.trim(),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
-  })
-  return created.id
-}
+  });
+  return created.id;
+};
 
-export const renameConnection = (connectionId: string, name: string): Promise<void> =>
+export const renameConnection = (
+  connectionId: string,
+  name: string,
+): Promise<void> =>
   updateDoc(doc(connectionsRef, connectionId), {
     name: name.trim(),
     updatedAt: serverTimestamp(),
-  })
+  });
 
 /** Runs on the backend: removes the connection with its contacts and messages. */
 export const deleteConnection = callable<
   { connectionId: string },
   { deletedContacts: number; deletedMessages: number }
->('deleteConnection')
+>('deleteConnection');

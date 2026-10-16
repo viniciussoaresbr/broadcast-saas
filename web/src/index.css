@@ -10,7 +10,8 @@
   --breakpoint-lg: 1200px;
   --breakpoint-xl: 1536px;
 
-  --font-sans: 'Geist Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-sans:
+    'Geist Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   --color-ground: var(--mui-palette-background-default);
   --color-surface: var(--mui-palette-background-paper);

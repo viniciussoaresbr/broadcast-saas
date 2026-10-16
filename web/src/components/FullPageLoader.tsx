@@ -1,5 +1,5 @@
-import CircularProgress from '@mui/material/CircularProgress'
-import BrandMark from './BrandMark'
+import CircularProgress from '@mui/material/CircularProgress';
+import BrandMark from './BrandMark';
 
 const FullPageLoader = () => (
   <div
@@ -8,8 +8,13 @@ const FullPageLoader = () => (
     aria-live="polite"
   >
     <BrandMark size={40} />
-    <CircularProgress size={20} thickness={5} aria-label="Carregando" sx={{ color: 'text.secondary' }} />
+    <CircularProgress
+      size={20}
+      thickness={5}
+      aria-label="Carregando"
+      sx={{ color: 'text.secondary' }}
+    />
   </div>
-)
+);
 
-export default FullPageLoader
+export default FullPageLoader;

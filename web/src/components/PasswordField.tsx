@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import IconButton from '@mui/material/IconButton'
-import InputAdornment from '@mui/material/InputAdornment'
-import TextField, { type TextFieldProps } from '@mui/material/TextField'
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined'
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined'
+import { useState } from 'react';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField, { type TextFieldProps } from '@mui/material/TextField';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 /** Password input with a show/hide toggle. */
 const PasswordField = (props: Omit<TextFieldProps, 'type'>) => {
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false);
 
   return (
     <TextField
@@ -23,7 +23,7 @@ const PasswordField = (props: Omit<TextFieldProps, 'type'>) => {
                 size="small"
                 aria-label={visible ? 'Ocultar senha' : 'Mostrar senha'}
                 aria-pressed={visible}
-                onClick={() => setVisible((current) => !current)}
+                onClick={() => setVisible(current => !current)}
               >
                 {visible ? (
                   <VisibilityOffOutlinedIcon fontSize="small" />
@@ -36,7 +36,7 @@ const PasswordField = (props: Omit<TextFieldProps, 'type'>) => {
         },
       }}
     />
-  )
-}
+  );
+};
 
-export default PasswordField
+export default PasswordField;

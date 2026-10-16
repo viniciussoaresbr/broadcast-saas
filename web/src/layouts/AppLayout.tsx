@@ -1,18 +1,18 @@
-import { useState } from 'react'
-import { Link as RouterLink, Outlet } from 'react-router-dom'
-import IconButton from '@mui/material/IconButton'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import Tooltip from '@mui/material/Tooltip'
-import Typography from '@mui/material/Typography'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import type { Theme } from '@mui/material/styles'
-import LogoutIcon from '@mui/icons-material/Logout'
-import { Wordmark } from '../components/BrandMark'
-import ConnectionNav from '../components/ConnectionNav'
-import Initials from '../components/Initials'
-import { useCurrentUser } from '../hooks/useAuth'
-import { signOut } from '../services/auth-service'
+import { useState } from 'react';
+import { Link as RouterLink, Outlet } from 'react-router-dom';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import type { Theme } from '@mui/material/styles';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Wordmark } from '../components/BrandMark';
+import ConnectionNav from '../components/ConnectionNav';
+import Initials from '../components/Initials';
+import { useCurrentUser } from '../hooks/useAuth';
+import { signOut } from '../services/auth-service';
 
 const SkipLink = () => (
   <a
@@ -21,12 +21,12 @@ const SkipLink = () => (
   >
     Pular para o conteúdo
   </a>
-)
+);
 
 /** Name and e-mail of the signed-in user, with the sign-out action. */
 const UserPanel = () => {
-  const user = useCurrentUser()
-  const label = user.displayName || user.email || 'Conta'
+  const user = useCurrentUser();
+  const label = user.displayName || user.email || 'Conta';
 
   return (
     <div className="flex items-center gap-3 px-3 py-3">
@@ -45,13 +45,13 @@ const UserPanel = () => {
         </IconButton>
       </Tooltip>
     </div>
-  )
-}
+  );
+};
 
 const UserMenu = () => {
-  const user = useCurrentUser()
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null)
-  const label = user.displayName || user.email || 'Conta'
+  const user = useCurrentUser();
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const label = user.displayName || user.email || 'Conta';
 
   return (
     <>
@@ -59,7 +59,7 @@ const UserMenu = () => {
         aria-label="Conta"
         aria-haspopup="menu"
         aria-expanded={anchor !== null}
-        onClick={(event) => setAnchor(event.currentTarget)}
+        onClick={event => setAnchor(event.currentTarget)}
         className="p-1"
       >
         <Initials name={label} size="sm" />
@@ -76,7 +76,11 @@ const UserMenu = () => {
             {label}
           </Typography>
           {user.displayName && (
-            <Typography variant="caption" color="text.secondary" className="truncate">
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              className="truncate"
+            >
               {user.email}
             </Typography>
           )}
@@ -86,11 +90,14 @@ const UserMenu = () => {
         </MenuItem>
       </Menu>
     </>
-  )
-}
+  );
+};
 
 const AppLayout = () => {
-  const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
+  const isDesktop = useMediaQuery(
+    (theme: Theme) => theme.breakpoints.up('md'),
+    { noSsr: true },
+  );
 
   if (isDesktop) {
     return (
@@ -116,7 +123,7 @@ const AppLayout = () => {
           </div>
         </main>
       </div>
-    )
+    );
   }
 
   return (
@@ -131,11 +138,15 @@ const AppLayout = () => {
         </RouterLink>
         <UserMenu />
       </header>
-      <main id="conteudo" tabIndex={-1} className="w-full flex-1 px-4 py-5 outline-none">
+      <main
+        id="conteudo"
+        tabIndex={-1}
+        className="w-full flex-1 px-4 py-5 outline-none"
+      >
         <Outlet />
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default AppLayout
+export default AppLayout;

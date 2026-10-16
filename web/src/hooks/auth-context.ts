@@ -1,10 +1,10 @@
-import { createContext } from 'react'
-import type { User } from 'firebase/auth'
+import { createContext } from 'react';
+import type { User } from 'firebase/auth';
 
 export type AuthState = {
-  user: User | null
+  user: User | null;
   /** True until Firebase restores (or not) the previous session. */
-  initializing: boolean
-}
+  initializing: boolean;
+};
 
-export const AuthContext = createContext<AuthState | null>(null)
+export const AuthContext = createContext<AuthState | null>(null);

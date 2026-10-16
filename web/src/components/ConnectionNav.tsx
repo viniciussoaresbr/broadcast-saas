@@ -1,41 +1,43 @@
-import { useState, type MouseEvent } from 'react'
-import { NavLink } from 'react-router-dom'
-import Alert from '@mui/material/Alert'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import Typography from '@mui/material/Typography'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined'
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import PodcastsOutlinedIcon from '@mui/icons-material/PodcastsOutlined'
-import { useConnections } from '../hooks/useData'
-import type { Connection } from '../types'
-import { formatDate } from '../utils/date'
-import { getErrorMessage } from '../utils/errors'
-import ConnectionDialogs, { type ConnectionDialogState } from './ConnectionDialogs'
-import EmptyState from './EmptyState'
-import Initials from './Initials'
-import ListSkeleton from './ListSkeleton'
+import { useState, type MouseEvent } from 'react';
+import { NavLink } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import PodcastsOutlinedIcon from '@mui/icons-material/PodcastsOutlined';
+import { useConnections } from '../hooks/useData';
+import type { Connection } from '../types';
+import { formatDate } from '../utils/date';
+import { getErrorMessage } from '../utils/errors';
+import ConnectionDialogs, {
+  type ConnectionDialogState,
+} from './ConnectionDialogs';
+import EmptyState from './EmptyState';
+import Initials from './Initials';
+import ListSkeleton from './ListSkeleton';
 
 type ConnectionNavProps = {
   /** `sidebar`: compact rows in the desktop rail. `page`: full-width list on phones. */
-  variant: 'sidebar' | 'page'
-}
+  variant: 'sidebar' | 'page';
+};
 
-type MenuState = { anchor: HTMLElement; connection: Connection } | null
+type MenuState = { anchor: HTMLElement; connection: Connection } | null;
 
 /** The user's connections, with the create / rename / delete entry points. */
 const ConnectionNav = ({ variant }: ConnectionNavProps) => {
-  const connections = useConnections()
-  const [dialog, setDialog] = useState<ConnectionDialogState>(null)
-  const [menu, setMenu] = useState<MenuState>(null)
-  const isSidebar = variant === 'sidebar'
+  const connections = useConnections();
+  const [dialog, setDialog] = useState<ConnectionDialogState>(null);
+  const [menu, setMenu] = useState<MenuState>(null);
+  const isSidebar = variant === 'sidebar';
 
   const openMenu = (event: MouseEvent<HTMLElement>, connection: Connection) =>
-    setMenu({ anchor: event.currentTarget, connection })
+    setMenu({ anchor: event.currentTarget, connection });
 
   const createButton = (
     <Button
@@ -47,18 +49,26 @@ const ConnectionNav = ({ variant }: ConnectionNavProps) => {
     >
       Nova conexão
     </Button>
-  )
+  );
 
   const renderList = () => {
     if (connections.error) {
-      return <Alert severity="error">{getErrorMessage(connections.error)}</Alert>
+      return (
+        <Alert severity="error">{getErrorMessage(connections.error)}</Alert>
+      );
     }
     if (connections.loading || !connections.data) {
-      return <ListSkeleton rows={isSidebar ? 3 : 4} label="Carregando conexões" />
+      return (
+        <ListSkeleton rows={isSidebar ? 3 : 4} label="Carregando conexões" />
+      );
     }
     if (connections.data.length === 0) {
       return isSidebar ? (
-        <Typography variant="body2" color="text.secondary" className="px-3 py-2">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          className="px-3 py-2"
+        >
           Nenhuma conexão ainda.
         </Typography>
       ) : (
@@ -68,12 +78,12 @@ const ConnectionNav = ({ variant }: ConnectionNavProps) => {
           description="Crie sua primeira conexão para cadastrar contatos e enviar mensagens."
           action={createButton}
         />
-      )
+      );
     }
 
     return (
       <ul className={`flex flex-col ${isSidebar ? 'gap-0.5' : 'gap-1'}`}>
-        {connections.data.map((connection) => (
+        {connections.data.map(connection => (
           <li key={connection.id} className="group relative">
             <NavLink
               to={`/connections/${connection.id}`}
@@ -103,7 +113,7 @@ const ConnectionNav = ({ variant }: ConnectionNavProps) => {
               aria-label={`Ações de ${connection.name}`}
               aria-haspopup="menu"
               aria-expanded={menu?.connection.id === connection.id}
-              onClick={(event) => openMenu(event, connection)}
+              onClick={event => openMenu(event, connection)}
               className={[
                 'absolute top-1/2 right-1.5 -translate-y-1/2',
                 isSidebar &&
@@ -117,15 +127,20 @@ const ConnectionNav = ({ variant }: ConnectionNavProps) => {
           </li>
         ))}
       </ul>
-    )
-  }
+    );
+  };
 
   return (
     <nav aria-label="Conexões" className="flex min-h-0 flex-1 flex-col">
       {isSidebar ? (
         <div className="flex flex-col gap-4 px-3">
           {createButton}
-          <Typography variant="caption" component="h2" color="text.secondary" className="px-2 font-medium">
+          <Typography
+            variant="caption"
+            component="h2"
+            color="text.secondary"
+            className="px-2 font-medium"
+          >
             Conexões
           </Typography>
         </div>
@@ -141,7 +156,13 @@ const ConnectionNav = ({ variant }: ConnectionNavProps) => {
         </header>
       )}
 
-      <div className={isSidebar ? 'mt-1 min-h-0 flex-1 overflow-y-auto px-3 pb-3' : ''}>{renderList()}</div>
+      <div
+        className={
+          isSidebar ? 'mt-1 min-h-0 flex-1 overflow-y-auto px-3 pb-3' : ''
+        }
+      >
+        {renderList()}
+      </div>
 
       <Menu
         anchorEl={menu?.anchor}
@@ -152,16 +173,17 @@ const ConnectionNav = ({ variant }: ConnectionNavProps) => {
       >
         <MenuItem
           onClick={() => {
-            if (menu) setDialog({ type: 'edit', connection: menu.connection })
-            setMenu(null)
+            if (menu) setDialog({ type: 'edit', connection: menu.connection });
+            setMenu(null);
           }}
         >
           <EditOutlinedIcon /> Renomear
         </MenuItem>
         <MenuItem
           onClick={() => {
-            if (menu) setDialog({ type: 'delete', connection: menu.connection })
-            setMenu(null)
+            if (menu)
+              setDialog({ type: 'delete', connection: menu.connection });
+            setMenu(null);
           }}
           sx={{ color: 'error.main' }}
         >
@@ -171,7 +193,7 @@ const ConnectionNav = ({ variant }: ConnectionNavProps) => {
 
       <ConnectionDialogs dialog={dialog} onClose={() => setDialog(null)} />
     </nav>
-  )
-}
+  );
+};
 
-export default ConnectionNav
+export default ConnectionNav;

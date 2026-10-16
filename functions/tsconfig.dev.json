@@ -3,10 +3,5 @@
     "allowJs": true,
     "noEmit": true
   },
-  "include": [
-    ".eslintrc.js",
-    "src",
-    "test",
-    "vitest.config.mts"
-  ]
+  "include": [".eslintrc.js", "src", "test", "vitest.config.mts"]
 }

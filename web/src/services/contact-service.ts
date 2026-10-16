@@ -5,9 +5,9 @@ import {
   where,
   type DocumentSnapshot,
   type Unsubscribe,
-} from 'firebase/firestore'
-import type { Contact } from '../types'
-import { db } from './firebase'
+} from 'firebase/firestore';
+import type { Contact } from '../types';
+import { db } from './firebase';
 import {
   callable,
   readDoc,
@@ -15,10 +15,10 @@ import {
   toDate,
   type OnData,
   type OnError,
-} from './firestore-utils'
+} from './firestore-utils';
 
 const toContact = (snapshot: DocumentSnapshot): Contact => {
-  const data = readDoc(snapshot)
+  const data = readDoc(snapshot);
   return {
     id: snapshot.id,
     ownerId: data.ownerId,
@@ -27,8 +27,8 @@ const toContact = (snapshot: DocumentSnapshot): Contact => {
     phone: data.phone,
     createdAt: toDate(data.createdAt),
     updatedAt: toDate(data.updatedAt),
-  }
-}
+  };
+};
 
 export const subscribeToContacts = (
   ownerId: string,
@@ -46,18 +46,20 @@ export const subscribeToContacts = (
     toContact,
     onData,
     onError,
-  )
+  );
 
 // Writes go through Cloud Functions, which validate ownership and keep the
 // phone unique per connection.
 export const createContact = callable<
   { connectionId: string; name: string; phone: string },
   { id: string }
->('createContact')
+>('createContact');
 
-export const updateContact = callable<{ contactId: string; name: string; phone: string }>(
-  'updateContact',
-)
+export const updateContact = callable<{
+  contactId: string;
+  name: string;
+  phone: string;
+}>('updateContact');
 
 /** Also removes the contact from scheduled messages (sent ones are kept). */
-export const deleteContact = callable<{ contactId: string }>('deleteContact')
+export const deleteContact = callable<{ contactId: string }>('deleteContact');

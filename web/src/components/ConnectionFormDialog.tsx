@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import TextField from '@mui/material/TextField'
-import { useAsyncAction } from '../hooks/useAsyncAction'
-import { NAME_MAX_LENGTH, validateName } from '../utils/validation'
-import FormDialog from './FormDialog'
+import { useState } from 'react';
+import TextField from '@mui/material/TextField';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import { NAME_MAX_LENGTH, validateName } from '../utils/validation';
+import FormDialog from './FormDialog';
 
 type ConnectionFormDialogProps = {
-  open: boolean
-  initialName?: string
-  onSave: (name: string) => Promise<unknown>
-  onClose: () => void
-}
+  open: boolean;
+  initialName?: string;
+  onSave: (name: string) => Promise<unknown>;
+  onClose: () => void;
+};
 
 /** Mount with a `key` per edited item so the form starts from its values. */
 const ConnectionFormDialog = ({
@@ -18,17 +18,17 @@ const ConnectionFormDialog = ({
   onSave,
   onClose,
 }: ConnectionFormDialogProps) => {
-  const [name, setName] = useState(initialName)
-  const [nameError, setNameError] = useState<string | null>(null)
-  const { pending, error, run } = useAsyncAction()
-  const isEditing = initialName !== ''
+  const [name, setName] = useState(initialName);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const { pending, error, run } = useAsyncAction();
+  const isEditing = initialName !== '';
 
   const submit = async () => {
-    const invalid = validateName(name)
-    setNameError(invalid)
-    if (invalid) return
-    if (await run(() => onSave(name))) onClose()
-  }
+    const invalid = validateName(name);
+    setNameError(invalid);
+    if (invalid) return;
+    if (await run(() => onSave(name))) onClose();
+  };
 
   return (
     <FormDialog
@@ -50,7 +50,7 @@ const ConnectionFormDialog = ({
         name="connection-name"
         autoComplete="off"
         value={name}
-        onChange={(event) => setName(event.target.value)}
+        onChange={event => setName(event.target.value)}
         error={Boolean(nameError)}
         helperText={nameError ?? `${name.trim().length}/${NAME_MAX_LENGTH}`}
         slotProps={{ htmlInput: { maxLength: NAME_MAX_LENGTH + 10 } }}
@@ -58,7 +58,7 @@ const ConnectionFormDialog = ({
         autoFocus
       />
     </FormDialog>
-  )
-}
+  );
+};
 
-export default ConnectionFormDialog
+export default ConnectionFormDialog;

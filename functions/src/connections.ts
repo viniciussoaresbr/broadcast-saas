@@ -1,6 +1,6 @@
-import {Firestore, Query} from "firebase-admin/firestore";
-import {HttpsError} from "firebase-functions/v2/https";
-import {asPayload, parseId} from "./lib/validation";
+import { Firestore, Query } from 'firebase-admin/firestore';
+import { HttpsError } from 'firebase-functions/v2/https';
+import { asPayload, parseId } from './lib/validation';
 
 const BATCH_SIZE = 400;
 
@@ -12,7 +12,7 @@ const deleteQueryInBatches = async (
   if (snapshot.empty) return 0;
 
   const batch = db.batch();
-  snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+  snapshot.docs.forEach(doc => batch.delete(doc.ref));
   await batch.commit();
 
   return snapshot.size + (await deleteQueryInBatches(db, query));
@@ -27,31 +27,31 @@ export const deleteConnection = async (
   db: Firestore,
   uid: string,
   data: unknown,
-): Promise<{deletedContacts: number; deletedMessages: number}> => {
+): Promise<{ deletedContacts: number; deletedMessages: number }> => {
   const payload = asPayload(data);
-  const connectionId = parseId(payload.connectionId, "connectionId");
-  const ref = db.collection("connections").doc(connectionId);
+  const connectionId = parseId(payload.connectionId, 'connectionId');
+  const ref = db.collection('connections').doc(connectionId);
 
   const connection = await ref.get();
-  if (!connection.exists || connection.get("ownerId") !== uid) {
-    throw new HttpsError("not-found", "Conexão não encontrada.");
+  if (!connection.exists || connection.get('ownerId') !== uid) {
+    throw new HttpsError('not-found', 'Conexão não encontrada.');
   }
 
   const byConnection = (collection: string) =>
     db
       .collection(collection)
-      .where("ownerId", "==", uid)
-      .where("connectionId", "==", connectionId);
+      .where('ownerId', '==', uid)
+      .where('connectionId', '==', connectionId);
 
   const deletedMessages = await deleteQueryInBatches(
     db,
-    byConnection("messages"),
+    byConnection('messages'),
   );
   const deletedContacts = await deleteQueryInBatches(
     db,
-    byConnection("contacts"),
+    byConnection('contacts'),
   );
   await ref.delete();
 
-  return {deletedContacts, deletedMessages};
+  return { deletedContacts, deletedMessages };
 };
