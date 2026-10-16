@@ -4,17 +4,16 @@ import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import TextField from '@mui/material/TextField'
+import { useAsyncAction } from '../hooks/useAsyncAction'
 import AuthLayout from '../layouts/AuthLayout'
 import { sendPasswordReset } from '../services/auth-service'
-import { getErrorMessage } from '../utils/errors'
 import { validateEmail } from '../utils/validation'
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
   const [sent, setSent] = useState(false)
-  const [pending, setPending] = useState(false)
+  const { pending, error, run } = useAsyncAction()
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -22,16 +21,7 @@ const ForgotPasswordPage = () => {
     setEmailError(invalidEmail)
     if (invalidEmail) return
 
-    setPending(true)
-    setError(null)
-    try {
-      await sendPasswordReset(email)
-      setSent(true)
-    } catch (err) {
-      setError(getErrorMessage(err))
-    } finally {
-      setPending(false)
-    }
+    if (await run(() => sendPasswordReset(email))) setSent(true)
   }
 
   return (

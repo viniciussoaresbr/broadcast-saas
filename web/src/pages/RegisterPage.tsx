@@ -5,9 +5,9 @@ import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { useAsyncAction } from '../hooks/useAsyncAction'
 import AuthLayout from '../layouts/AuthLayout'
 import { signUp } from '../services/auth-service'
-import { getErrorMessage } from '../utils/errors'
 import { validateEmail, validateName, validatePassword } from '../utils/validation'
 
 type Fields = { name: string; email: string; password: string; confirmPassword: string }
@@ -29,8 +29,7 @@ const RegisterPage = () => {
     confirmPassword: '',
   })
   const [errors, setErrors] = useState<FieldErrors>({})
-  const [error, setError] = useState<string | null>(null)
-  const [pending, setPending] = useState(false)
+  const { pending, error, run } = useAsyncAction()
 
   const setField = (name: keyof Fields) => (value: string) =>
     setFields((current) => ({ ...current, [name]: value }))
@@ -41,15 +40,8 @@ const RegisterPage = () => {
     setErrors(validation)
     if (Object.values(validation).some(Boolean)) return
 
-    setPending(true)
-    setError(null)
-    try {
-      // On success, <PublicOnlyRoute> redirects to the private area.
-      await signUp(fields)
-    } catch (err) {
-      setError(getErrorMessage(err))
-      setPending(false)
-    }
+    // On success, <PublicOnlyRoute> redirects to the private area.
+    await run(() => signUp(fields))
   }
 
   return (

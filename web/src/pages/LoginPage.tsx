@@ -5,17 +5,16 @@ import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import { useAsyncAction } from '../hooks/useAsyncAction'
 import AuthLayout from '../layouts/AuthLayout'
 import { signIn } from '../services/auth-service'
-import { getErrorMessage } from '../utils/errors'
 import { validateEmail } from '../utils/validation'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [emailError, setEmailError] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [pending, setPending] = useState(false)
+  const { pending, error, run } = useAsyncAction()
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -23,15 +22,8 @@ const LoginPage = () => {
     setEmailError(invalidEmail)
     if (invalidEmail || !password) return
 
-    setPending(true)
-    setError(null)
-    try {
-      // On success, <PublicOnlyRoute> redirects to the private area.
-      await signIn(email, password)
-    } catch (err) {
-      setError(getErrorMessage(err))
-      setPending(false)
-    }
+    // On success, <PublicOnlyRoute> redirects to the private area.
+    await run(() => signIn(email, password))
   }
 
   return (
