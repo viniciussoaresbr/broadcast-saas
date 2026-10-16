@@ -78,7 +78,11 @@ const LoginPage = () => {
         >
           Entrar
         </Button>
-        <Typography variant="body2" color="text.secondary" className="mt-2">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          className="mt-2 text-center"
+        >
           Ainda não tem conta?{' '}
           <Link component={RouterLink} to="/register">
             Criar conta

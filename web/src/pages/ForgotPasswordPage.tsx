@@ -62,7 +62,7 @@ const ForgotPasswordPage = () => {
           component={RouterLink}
           to="/login"
           variant="body2"
-          className="mt-2 self-start"
+          className="mt-2 self-center"
         >
           Voltar para o login
         </Link>
