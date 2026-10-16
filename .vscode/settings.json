@@ -1,0 +1,12 @@
+{
+  // Prettier formats (config in .prettierrc.json at the root); each package's
+  // ESLint config checks code quality and has its style rules turned off by
+  // eslint-config-prettier, so the two never disagree.
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.workingDirectories": ["web", "functions"],
+  "prettier.requireConfig": true
+}

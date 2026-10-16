@@ -1,0 +1,11 @@
+# Builds and dependencies
+node_modules/
+web/dist/
+functions/lib/
+dist/
+lib/
+
+# Generated or managed by tools
+package-lock.json
+.firebase/
+*.log
