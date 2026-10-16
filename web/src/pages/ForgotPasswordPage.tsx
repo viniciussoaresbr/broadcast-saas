@@ -43,7 +43,12 @@ const ForgotPasswordPage = () => {
           type="email"
           autoComplete="email"
           value={email}
-          onChange={event => setEmail(event.target.value)}
+          onChange={event => {
+            setEmail(event.target.value);
+            // Re-check while typing only once an error is showing, to clear it.
+            if (emailError) setEmailError(validateEmail(event.target.value));
+          }}
+          onBlur={() => email && setEmailError(validateEmail(email))}
           error={Boolean(emailError)}
           helperText={emailError}
           required

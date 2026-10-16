@@ -47,6 +47,9 @@ const RegisterPage = () => {
   const setField = (name: keyof Fields) => (value: string) =>
     setFields(current => ({ ...current, [name]: value }));
 
+  const setFieldError = (name: keyof Fields, message: string | null) =>
+    setErrors(current => ({ ...current, [name]: message }));
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const validation = validate(fields);
@@ -81,7 +84,15 @@ const RegisterPage = () => {
           type="email"
           autoComplete="email"
           value={fields.email}
-          onChange={event => setField('email')(event.target.value)}
+          onChange={event => {
+            setField('email')(event.target.value);
+            // Re-check while typing only once an error is showing, to clear it.
+            if (errors.email)
+              setFieldError('email', validateEmail(event.target.value));
+          }}
+          onBlur={() =>
+            fields.email && setFieldError('email', validateEmail(fields.email))
+          }
           error={Boolean(errors.email)}
           helperText={errors.email}
           required
