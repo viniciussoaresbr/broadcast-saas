@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
 import './index.css'
 import App from './App.tsx'
+import AuthProvider from './components/AuthProvider.tsx'
 import { theme } from './theme.ts'
 
 createRoot(document.getElementById('root')!).render(
@@ -12,9 +13,11 @@ createRoot(document.getElementById('root')!).render(
     <StyledEngineProvider enableCssLayer>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <AuthProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </AuthProvider>
       </ThemeProvider>
     </StyledEngineProvider>
   </StrictMode>,
