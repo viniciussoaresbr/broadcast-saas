@@ -65,7 +65,7 @@ const RegisterPage = () => {
       title="Criar conta"
       subtitle="Comece a organizar seus contatos e envios em minutos."
     >
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      <form className="flex flex-col gap-2" onSubmit={handleSubmit} noValidate>
         {error && <Alert severity="error">{error}</Alert>}
         <TextField
           label="Nome"
@@ -74,7 +74,7 @@ const RegisterPage = () => {
           value={fields.name}
           onChange={event => setField('name')(event.target.value)}
           error={Boolean(errors.name)}
-          helperText={errors.name}
+          helperText={errors.name ?? ' '}
           required
           autoFocus
         />
@@ -94,7 +94,7 @@ const RegisterPage = () => {
             fields.email && setFieldError('email', validateEmail(fields.email))
           }
           error={Boolean(errors.email)}
-          helperText={errors.email}
+          helperText={errors.email ?? ' '}
           required
         />
         <PasswordField
@@ -116,7 +116,7 @@ const RegisterPage = () => {
           value={fields.confirmPassword}
           onChange={event => setField('confirmPassword')(event.target.value)}
           error={Boolean(errors.confirmPassword)}
-          helperText={errors.confirmPassword}
+          helperText={errors.confirmPassword ?? ' '}
           required
         />
         <Button

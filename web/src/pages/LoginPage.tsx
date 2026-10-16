@@ -35,7 +35,7 @@ const LoginPage = () => {
       title="Entrar"
       subtitle="Acesse suas conexões, contatos e envios."
     >
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      <form className="flex flex-col gap-2" onSubmit={handleSubmit} noValidate>
         {error && <Alert severity="error">{error}</Alert>}
         <TextField
           label="E-mail"
@@ -50,7 +50,7 @@ const LoginPage = () => {
           }}
           onBlur={() => email && setEmailError(validateEmail(email))}
           error={Boolean(emailError)}
-          helperText={emailError}
+          helperText={emailError ?? ' '}
           required
           autoFocus
         />
@@ -62,7 +62,7 @@ const LoginPage = () => {
             value={password}
             onChange={event => setPassword(event.target.value)}
             error={Boolean(passwordError)}
-            helperText={passwordError}
+            helperText={passwordError ?? ' '}
             required
           />
           <Link

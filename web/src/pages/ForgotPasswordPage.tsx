@@ -29,7 +29,7 @@ const ForgotPasswordPage = () => {
       title="Recuperar senha"
       subtitle="Informe o e-mail da sua conta e enviaremos um link para criar uma nova senha."
     >
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      <form className="flex flex-col gap-2" onSubmit={handleSubmit} noValidate>
         {error && <Alert severity="error">{error}</Alert>}
         {sent && (
           <Alert severity="success">
@@ -50,7 +50,7 @@ const ForgotPasswordPage = () => {
           }}
           onBlur={() => email && setEmailError(validateEmail(email))}
           error={Boolean(emailError)}
-          helperText={emailError}
+          helperText={emailError ?? ' '}
           required
           autoFocus
         />
