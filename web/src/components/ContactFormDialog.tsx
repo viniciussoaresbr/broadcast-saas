@@ -42,6 +42,8 @@ const ContactFormDialog = ({ open, initialValues, onSave, onClose }: ContactForm
     >
       <TextField
         label="Nome"
+        name="contact-name"
+        autoComplete="off"
         value={name}
         onChange={(event) => setName(event.target.value)}
         error={Boolean(errors.name)}
@@ -52,12 +54,13 @@ const ContactFormDialog = ({ open, initialValues, onSave, onClose }: ContactForm
       />
       <TextField
         label="Celular"
+        name="contact-phone"
         placeholder="(11) 91234-5678"
         value={phone}
         onChange={(event) => setPhone(formatPhoneInput(event.target.value))}
         error={Boolean(errors.phone)}
         helperText={errors.phone ?? 'Celular brasileiro com DDD.'}
-        slotProps={{ htmlInput: { inputMode: 'tel', autoComplete: 'tel-national' } }}
+        slotProps={{ htmlInput: { inputMode: 'tel', autoComplete: 'off', className: 'tabular' } }}
         required
       />
     </FormDialog>
