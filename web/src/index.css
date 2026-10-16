@@ -1,3 +1,49 @@
 /* MUI styles go in the "mui" layer, so Tailwind utilities can override them */
 @layer theme, base, mui, components, utilities;
 @import 'tailwindcss';
+
+/* Tailwind reads the tokens MUI emits from theme.ts (cssVariables), so both share one palette. */
+@theme inline {
+  /* Same breakpoints as MUI, so `md:` classes and useMediaQuery(up('md')) switch together. */
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 900px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1536px;
+
+  --font-sans: 'Geist Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --color-ground: var(--mui-palette-background-default);
+  --color-surface: var(--mui-palette-background-paper);
+  --color-ink: var(--mui-palette-text-primary);
+  --color-muted: var(--mui-palette-text-secondary);
+  --color-line: var(--mui-palette-divider);
+  --color-tone-50: var(--mui-palette-grey-50);
+  --color-tone-100: var(--mui-palette-grey-100);
+  --color-tone-200: var(--mui-palette-grey-200);
+  --color-tone-300: var(--mui-palette-grey-300);
+  --color-signal: var(--mui-palette-primary-main);
+  --color-signal-dark: var(--mui-palette-primary-dark);
+  --color-signal-soft: var(--mui-palette-primary-light);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  /* Phone numbers and times line up in lists. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
