@@ -1,143 +1,76 @@
 import { useState } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemText from '@mui/material/ListItemText'
-import Paper from '@mui/material/Paper'
-import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import type { Theme } from '@mui/material/styles'
 import AddIcon from '@mui/icons-material/Add'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined'
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
-import ConfirmDialog from '../components/ConfirmDialog'
-import ConnectionFormDialog from '../components/ConnectionFormDialog'
-import EmptyState from '../components/EmptyState'
-import ListState from '../components/ListState'
-import { useCurrentUser } from '../hooks/useAuth'
+import ConnectionDialogs, { type ConnectionDialogState } from '../components/ConnectionDialogs'
+import ConnectionNav from '../components/ConnectionNav'
+import ListSkeleton from '../components/ListSkeleton'
 import { useConnections } from '../hooks/useData'
-import {
-  createConnection,
-  deleteConnection,
-  renameConnection,
-} from '../services/connection-service'
-import type { Connection } from '../types'
-import { formatDateTime } from '../utils/date'
+import { getErrorMessage } from '../utils/errors'
 
-type DialogState =
-  | { type: 'create' }
-  | { type: 'edit'; connection: Connection }
-  | { type: 'delete'; connection: Connection }
-  | null
+const STEPS = [
+  { title: 'Crie uma conexão', text: 'Ela agrupa contatos e mensagens de um mesmo canal, como uma loja ou campanha.' },
+  { title: 'Cadastre os contatos', text: 'Nome e celular com DDD de cada pessoa que vai receber as mensagens.' },
+  { title: 'Envie ou agende', text: 'Escreva uma vez, escolha os destinatários e envie agora ou na hora marcada.' },
+]
 
-const ConnectionsPage = () => {
-  const { uid } = useCurrentUser()
+/** Desktop: the list lives in the sidebar, so this is the starting point. */
+const ConnectionsOverview = () => {
   const connections = useConnections()
-  const [dialog, setDialog] = useState<DialogState>(null)
-  const closeDialog = () => setDialog(null)
+  const [dialog, setDialog] = useState<ConnectionDialogState>(null)
 
-  const createButton = (
-    <Button variant="contained" startIcon={<AddIcon />} onClick={() => setDialog({ type: 'create' })}>
-      Nova conexão
-    </Button>
-  )
+  if (connections.loading) return <ListSkeleton label="Carregando conexões" />
+
+  const hasConnections = (connections.data?.length ?? 0) > 0
 
   return (
-    <div className="flex flex-col gap-6">
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <Typography variant="h5" component="h1" className="font-semibold">
-            Conexões
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Cada conexão tem seus próprios contatos e mensagens.
-          </Typography>
-        </div>
-        {createButton}
-      </header>
+    <div className="mx-auto flex max-w-2xl flex-col gap-10 py-10">
+      <div>
+        <Typography variant="h1">{hasConnections ? 'Escolha uma conexão' : 'Comece pela primeira conexão'}</Typography>
+        <Typography color="text.secondary" className="mt-2 max-w-prose">
+          {hasConnections
+            ? 'Selecione uma conexão na lista ao lado para ver os contatos e as mensagens, ou crie uma nova.'
+            : 'Em três passos você já consegue enviar sua primeira mensagem.'}
+        </Typography>
+        <Button
+          variant="contained"
+          size="large"
+          startIcon={<AddIcon />}
+          onClick={() => setDialog({ type: 'create' })}
+          className="mt-6"
+        >
+          Nova conexão
+        </Button>
+      </div>
 
-      <ListState
-        state={connections}
-        empty={
-          <EmptyState
-            title="Nenhuma conexão ainda"
-            description="Crie sua primeira conexão para cadastrar contatos e enviar mensagens."
-            action={createButton}
-          />
-        }
-      >
-        {(items) => (
-          <Paper variant="outlined">
-            <List disablePadding>
-              {items.map((connection, index) => (
-                <ListItem
-                  key={connection.id}
-                  divider={index < items.length - 1}
-                  disablePadding
-                  secondaryAction={
-                    <div className="flex gap-1">
-                      <Tooltip title="Editar">
-                        <IconButton
-                          aria-label={`Editar ${connection.name}`}
-                          onClick={() => setDialog({ type: 'edit', connection })}
-                        >
-                          <EditOutlinedIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Excluir">
-                        <IconButton
-                          aria-label={`Excluir ${connection.name}`}
-                          onClick={() => setDialog({ type: 'delete', connection })}
-                        >
-                          <DeleteOutlineIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
-                  }
-                >
-                  <ListItemButton component={RouterLink} to={`/connections/${connection.id}`} className="pr-28">
-                    <ListItemText
-                      primary={connection.name}
-                      secondary={`Criada em ${formatDateTime(connection.createdAt)}`}
-                      slotProps={{ primary: { className: 'truncate font-medium' } }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Paper>
-        )}
-      </ListState>
+      {!hasConnections && (
+        <ol className="grid gap-3 sm:grid-cols-3">
+          {STEPS.map((step) => (
+            <li key={step.title} className="flex flex-col gap-1 rounded-xl bg-tone-100 p-4">
+              <Typography variant="h3" component="h2">
+                {step.title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {step.text}
+              </Typography>
+            </li>
+          ))}
+        </ol>
+      )}
 
-      {dialog?.type === 'create' && (
-        <ConnectionFormDialog open onSave={(name) => createConnection(uid, name)} onClose={closeDialog} />
-      )}
-      {dialog?.type === 'edit' && (
-        <ConnectionFormDialog
-          open
-          initialName={dialog.connection.name}
-          onSave={(name) => renameConnection(dialog.connection.id, name)}
-          onClose={closeDialog}
-        />
-      )}
-      {dialog?.type === 'delete' && (
-        <ConfirmDialog
-          open
-          title="Excluir conexão?"
-          description={
-            <>
-              A conexão <strong>{dialog.connection.name}</strong> será excluída junto com
-              todos os seus contatos e mensagens. Esta ação não pode ser desfeita.
-            </>
-          }
-          onConfirm={() => deleteConnection({ connectionId: dialog.connection.id })}
-          onClose={closeDialog}
-        />
-      )}
+      {connections.error && <Alert severity="error">{getErrorMessage(connections.error)}</Alert>}
+
+      <ConnectionDialogs dialog={dialog} onClose={() => setDialog(null)} />
     </div>
   )
+}
+
+const ConnectionsPage = () => {
+  const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
+  return isDesktop ? <ConnectionsOverview /> : <ConnectionNav variant="page" />
 }
 
 export default ConnectionsPage

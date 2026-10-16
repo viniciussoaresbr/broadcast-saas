@@ -19,3 +19,7 @@ export const parseDateTimeLocal = (value: string): Date | null => {
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? null : date
 }
+
+const dateFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' })
+
+export const formatDate = (date: Date | null): string => (date ? dateFormatter.format(date) : '—')

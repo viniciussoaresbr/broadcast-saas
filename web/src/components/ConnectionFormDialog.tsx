@@ -33,8 +33,13 @@ const ConnectionFormDialog = ({
   return (
     <FormDialog
       open={open}
-      title={isEditing ? 'Editar conexão' : 'Nova conexão'}
-      submitLabel={isEditing ? 'Salvar' : 'Criar'}
+      title={isEditing ? 'Renomear conexão' : 'Nova conexão'}
+      description={
+        isEditing
+          ? undefined
+          : 'Cada conexão agrupa seus próprios contatos e mensagens. Use um nome que a identifique, como a loja ou a campanha.'
+      }
+      submitLabel={isEditing ? 'Salvar' : 'Criar conexão'}
       pending={pending}
       error={error}
       onSubmit={submit}
@@ -42,6 +47,8 @@ const ConnectionFormDialog = ({
     >
       <TextField
         label="Nome da conexão"
+        name="connection-name"
+        autoComplete="off"
         value={name}
         onChange={(event) => setName(event.target.value)}
         error={Boolean(nameError)}

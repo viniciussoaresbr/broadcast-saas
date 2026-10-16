@@ -62,13 +62,15 @@ export const subscribeToConnection = (
     onError,
   )
 
-export const createConnection = async (ownerId: string, name: string): Promise<void> => {
-  await addDoc(connectionsRef, {
+/** Resolves to the new connection's ID. */
+export const createConnection = async (ownerId: string, name: string): Promise<string> => {
+  const created = await addDoc(connectionsRef, {
     ownerId,
     name: name.trim(),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   })
+  return created.id
 }
 
 export const renameConnection = (connectionId: string, name: string): Promise<void> =>
