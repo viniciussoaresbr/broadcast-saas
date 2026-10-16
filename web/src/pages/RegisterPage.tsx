@@ -5,10 +5,16 @@ import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import PasswordField from '../components/PasswordField'
 import { useAsyncAction } from '../hooks/useAsyncAction'
 import AuthLayout from '../layouts/AuthLayout'
 import { signUp } from '../services/auth-service'
-import { validateEmail, validateName, validatePassword } from '../utils/validation'
+import {
+  PASSWORD_MIN_LENGTH,
+  validateEmail,
+  validateName,
+  validatePassword,
+} from '../utils/validation'
 
 type Fields = { name: string; email: string; password: string; confirmPassword: string }
 type FieldErrors = Partial<Record<keyof Fields, string | null>>
@@ -45,11 +51,12 @@ const RegisterPage = () => {
   }
 
   return (
-    <AuthLayout title="Criar conta" subtitle="Cadastre-se para gerenciar seus envios">
+    <AuthLayout title="Criar conta" subtitle="Comece a organizar seus contatos e envios em minutos.">
       <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
         {error && <Alert severity="error">{error}</Alert>}
         <TextField
           label="Nome"
+          name="name"
           autoComplete="name"
           value={fields.name}
           onChange={(event) => setField('name')(event.target.value)}
@@ -60,6 +67,7 @@ const RegisterPage = () => {
         />
         <TextField
           label="E-mail"
+          name="email"
           type="email"
           autoComplete="email"
           value={fields.email}
@@ -68,19 +76,19 @@ const RegisterPage = () => {
           helperText={errors.email}
           required
         />
-        <TextField
+        <PasswordField
           label="Senha"
-          type="password"
+          name="new-password"
           autoComplete="new-password"
           value={fields.password}
           onChange={(event) => setField('password')(event.target.value)}
           error={Boolean(errors.password)}
-          helperText={errors.password}
+          helperText={errors.password ?? `Mínimo de ${PASSWORD_MIN_LENGTH} caracteres.`}
           required
         />
-        <TextField
+        <PasswordField
           label="Confirmar senha"
-          type="password"
+          name="confirm-password"
           autoComplete="new-password"
           value={fields.confirmPassword}
           onChange={(event) => setField('confirmPassword')(event.target.value)}
@@ -88,10 +96,10 @@ const RegisterPage = () => {
           helperText={errors.confirmPassword}
           required
         />
-        <Button type="submit" variant="contained" size="large" loading={pending}>
+        <Button type="submit" variant="contained" size="large" loading={pending} className="mt-2">
           Criar conta
         </Button>
-        <Typography variant="body2" className="text-center">
+        <Typography variant="body2" color="text.secondary" className="mt-2">
           Já tem conta?{' '}
           <Link component={RouterLink} to="/login">
             Entrar

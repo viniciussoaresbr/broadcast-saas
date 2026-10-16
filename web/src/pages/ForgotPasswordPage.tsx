@@ -27,7 +27,7 @@ const ForgotPasswordPage = () => {
   return (
     <AuthLayout
       title="Recuperar senha"
-      subtitle="Enviaremos um link para você redefinir sua senha"
+      subtitle="Informe o e-mail da sua conta e enviaremos um link para criar uma nova senha."
     >
       <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
         {error && <Alert severity="error">{error}</Alert>}
@@ -38,6 +38,7 @@ const ForgotPasswordPage = () => {
         )}
         <TextField
           label="E-mail"
+          name="email"
           type="email"
           autoComplete="email"
           value={email}
@@ -47,10 +48,10 @@ const ForgotPasswordPage = () => {
           required
           autoFocus
         />
-        <Button type="submit" variant="contained" size="large" loading={pending}>
+        <Button type="submit" variant="contained" size="large" loading={pending} className="mt-2">
           Enviar link
         </Button>
-        <Link component={RouterLink} to="/login" variant="body2" className="text-center">
+        <Link component={RouterLink} to="/login" variant="body2" className="mt-2 self-start">
           Voltar para o login
         </Link>
       </form>

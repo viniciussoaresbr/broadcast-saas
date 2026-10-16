@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
-import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
-import CampaignIcon from '@mui/icons-material/Campaign'
+import { Wordmark } from '../components/BrandMark'
 
 type AuthLayoutProps = {
   title: string
@@ -9,23 +8,61 @@ type AuthLayoutProps = {
   children: ReactNode
 }
 
+/** Concentric waves from the lamp in the corner: the brand mark, enlarged. */
+const SignalWaves = () => (
+  <svg
+    aria-hidden
+    viewBox="0 0 600 600"
+    className="pointer-events-none absolute -bottom-24 -left-24 w-[680px] max-w-none text-white"
+  >
+    {[90, 170, 250, 330, 410].map((radius, index) => (
+      <circle
+        key={radius}
+        cx="160"
+        cy="440"
+        r={radius}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        opacity={0.22 - index * 0.035}
+      />
+    ))}
+    <circle cx="160" cy="440" r="34" fill="currentColor" opacity="0.9" />
+  </svg>
+)
+
 const AuthLayout = ({ title, subtitle, children }: AuthLayoutProps) => (
-  <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-10">
-    <Paper elevation={2} className="w-full max-w-md p-6 sm:p-8">
-      <div className="mb-6 flex flex-col items-center gap-2 text-center">
-        <CampaignIcon color="primary" fontSize="large" aria-hidden />
-        <Typography variant="h5" component="h1" className="font-semibold">
-          {title}
-        </Typography>
-        {subtitle && (
-          <Typography variant="body2" color="text.secondary">
-            {subtitle}
+  <div className="grid min-h-dvh bg-surface lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+    <main className="flex flex-col px-6 py-8 sm:px-12 lg:px-16">
+      <Wordmark />
+      <div className="flex flex-1 items-center py-10">
+        <div className="w-full max-w-[380px]">
+          <Typography variant="h1" className="text-[1.75rem]">
+            {title}
           </Typography>
-        )}
+          {subtitle && (
+            <Typography color="text.secondary" className="mt-2">
+              {subtitle}
+            </Typography>
+          )}
+          <div className="mt-8">{children}</div>
+        </div>
       </div>
-      {children}
-    </Paper>
-  </main>
+    </main>
+
+    <aside className="relative m-3 hidden overflow-hidden rounded-2xl bg-signal p-14 text-white lg:flex lg:flex-col lg:justify-end">
+      <SignalWaves />
+      <div className="relative ml-auto max-w-md">
+        <p className="m-0 text-[2.5rem] leading-[1.05] font-semibold tracking-[-0.03em] text-balance">
+          Uma mensagem, todos os seus contatos.
+        </p>
+        <p className="mt-5 mb-0 text-base leading-relaxed text-white/85">
+          Escreva uma vez, escolha quem recebe e envie agora ou na hora marcada. O agendamento roda
+          no servidor, mesmo com esta aba fechada.
+        </p>
+      </div>
+    </aside>
+  </div>
 )
 
 export default AuthLayout
