@@ -2,6 +2,9 @@ import { FirebaseError } from 'firebase/app'
 
 const AUTH_MESSAGES: Record<string, string> = {
   'auth/invalid-credential': 'E-mail ou senha incorretos.',
+  // Returned instead of invalid-credential when email enumeration protection is off (e.g. the emulator).
+  'auth/user-not-found': 'E-mail ou senha incorretos.',
+  'auth/wrong-password': 'E-mail ou senha incorretos.',
   'auth/invalid-email': 'E-mail inválido.',
   'auth/user-disabled': 'Esta conta foi desativada.',
   'auth/email-already-in-use': 'Já existe uma conta com este e-mail.',
