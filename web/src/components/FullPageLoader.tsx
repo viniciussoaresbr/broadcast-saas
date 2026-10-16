@@ -1,8 +1,14 @@
 import CircularProgress from '@mui/material/CircularProgress'
+import BrandMark from './BrandMark'
 
 const FullPageLoader = () => (
-  <div className="flex min-h-screen items-center justify-center" role="status" aria-live="polite">
-    <CircularProgress aria-label="Carregando" />
+  <div
+    className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-ground"
+    role="status"
+    aria-live="polite"
+  >
+    <BrandMark size={40} />
+    <CircularProgress size={20} thickness={5} aria-label="Carregando" sx={{ color: 'text.secondary' }} />
   </div>
 )
 

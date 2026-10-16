@@ -5,19 +5,32 @@ type EmptyStateProps = {
   title: string
   description?: string
   action?: ReactNode
+  /** Optional MUI icon element, shown in a soft tile above the title. */
+  icon?: ReactNode
+  /** `plain` drops the tinted background, for use inside an already tinted area. */
+  variant?: 'tinted' | 'plain'
 }
 
-const EmptyState = ({ title, description, action }: EmptyStateProps) => (
-  <div className="flex flex-col items-center gap-2 rounded-lg border border-dashed border-slate-300 px-6 py-10 text-center">
-    <Typography variant="subtitle1" component="p" className="font-medium">
+const EmptyState = ({ title, description, action, icon, variant = 'tinted' }: EmptyStateProps) => (
+  <div
+    className={`flex flex-col items-center gap-1.5 rounded-xl px-6 py-12 text-center ${
+      variant === 'tinted' ? 'bg-tone-100' : ''
+    }`}
+  >
+    {icon && (
+      <span aria-hidden className="mb-2 grid size-11 place-items-center rounded-xl bg-surface text-muted shadow-[0_0_0_1px_var(--color-tone-200)]">
+        {icon}
+      </span>
+    )}
+    <Typography variant="h3" component="p" className="text-balance">
       {title}
     </Typography>
     {description && (
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" color="text.secondary" className="max-w-sm text-pretty">
         {description}
       </Typography>
     )}
-    {action && <div className="mt-2">{action}</div>}
+    {action && <div className="mt-4">{action}</div>}
   </div>
 )
 
