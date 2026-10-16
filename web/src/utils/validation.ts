@@ -35,7 +35,7 @@ export const validateContent: Validator<string> = value => {
   const content = value.trim();
   if (content.length === 0) return 'Escreva a mensagem.';
   if (content.length > CONTENT_MAX_LENGTH)
-    return `Use até ${CONTENT_MAX_LENGTH} caracteres.`;
+    return `A mensagem deve ter até ${CONTENT_MAX_LENGTH} caracteres.`;
   return null;
 };
 

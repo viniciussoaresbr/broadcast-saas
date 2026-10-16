@@ -128,10 +128,13 @@ const MessageFields = ({
         }
         disabled={disabled}
         multiline
-        minRows={4}
-        maxRows={12}
+        rows={4}
         required
         slotProps={{
+          htmlInput: {
+            className: 'resize-none',
+            maxLength: CONTENT_MAX_LENGTH,
+          },
           formHelperText: {
             className: errors.content ? '' : 'tabular text-right',
           },
