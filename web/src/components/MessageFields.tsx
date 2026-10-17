@@ -14,6 +14,7 @@ import type { Contact } from '../types';
 import { toDateTimeLocalValue } from '../utils/date';
 import { formatPhone } from '../utils/phone';
 import { CONTENT_MAX_LENGTH } from '../utils/validation';
+import HintOrError from './HintOrError';
 
 type MessageFieldsProps = {
   contacts: Contact[];
@@ -177,21 +178,10 @@ const MessageFields = ({
           onChange={event => onChange({ scheduledAt: event.target.value })}
           error={Boolean(errors.scheduledAt)}
           helperText={
-            // Hint and error share one grid cell, so the line keeps the height
-            // of the taller text whichever one is visible.
-            <span className="grid">
-              <span
-                className={`col-start-1 row-start-1 ${errors.scheduledAt ? 'invisible' : ''}`}
-              >
-                Horário local. O envio é processado em até cerca de 1 minuto
-                após o horário.
-              </span>
-              <span
-                className={`col-start-1 row-start-1 ${errors.scheduledAt ? '' : 'invisible'}`}
-              >
-                {errors.scheduledAt}
-              </span>
-            </span>
+            <HintOrError
+              hint="Horário local. O envio é processado em até cerca de 1 minuto após o horário."
+              error={errors.scheduledAt}
+            />
           }
           disabled={disabled}
           slotProps={{
