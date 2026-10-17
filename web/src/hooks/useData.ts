@@ -1,4 +1,4 @@
-import type { Connection, Contact, Message, MessageFilter } from '../types';
+import type { Connection, Contact, MessageFilter, MessagePage } from '../types';
 import {
   subscribeToConnection,
   subscribeToConnections,
@@ -8,8 +8,7 @@ import { subscribeToMessages } from '../services/message-service';
 import { useCurrentUser } from './useAuth';
 import { useRealtime } from './useRealtime';
 
-// Every query is scoped by the signed-in user's UID; the security rules
-// reject any query that is not.
+// Toda consulta é filtrada pelo UID; as regras rejeitam as que não forem.
 
 export const useConnections = () => {
   const { uid } = useCurrentUser();
@@ -30,11 +29,18 @@ export const useContacts = (connectionId: string) => {
   );
 };
 
-export const useMessages = (connectionId: string, filter: MessageFilter) => {
+// Aumentar `pageSize` mantém a página atual na tela enquanto carrega mais.
+export const useMessages = (
+  connectionId: string,
+  filter: MessageFilter,
+  pageSize: number,
+) => {
   const { uid } = useCurrentUser();
-  return useRealtime<Message[]>(
-    `${uid}/${connectionId}/${filter}`,
+  const scope = `${uid}/${connectionId}/${filter}`;
+  return useRealtime<MessagePage>(
+    `${scope}/${pageSize}`,
     (onData, onError) =>
-      subscribeToMessages(uid, connectionId, filter, onData, onError),
+      subscribeToMessages(uid, connectionId, filter, pageSize, onData, onError),
+    scope,
   );
 };

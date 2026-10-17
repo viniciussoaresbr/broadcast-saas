@@ -1,5 +1,6 @@
 import {
   collection,
+  limit,
   orderBy,
   query,
   where,
@@ -7,7 +8,12 @@ import {
   type QueryConstraint,
   type Unsubscribe,
 } from 'firebase/firestore';
-import type { Message, MessageFilter, MessageInput } from '../types';
+import type {
+  Message,
+  MessageFilter,
+  MessageInput,
+  MessagePage,
+} from '../types';
 import { db } from './firebase';
 import {
   callable,
@@ -35,11 +41,13 @@ const toMessage = (snapshot: DocumentSnapshot): Message => {
   };
 };
 
+// Escuta as `pageSize` mais recentes; um documento a mais indica se há outras.
 export const subscribeToMessages = (
   ownerId: string,
   connectionId: string,
   filter: MessageFilter,
-  onData: OnData<Message[]>,
+  pageSize: number,
+  onData: OnData<MessagePage>,
   onError: OnError,
 ): Unsubscribe => {
   const statusConstraint: QueryConstraint[] =
@@ -51,14 +59,19 @@ export const subscribeToMessages = (
       where('connectionId', '==', connectionId),
       ...statusConstraint,
       orderBy('createdAt', 'desc'),
+      limit(pageSize + 1),
     ),
     toMessage,
-    onData,
+    messages =>
+      onData({
+        items: messages.slice(0, pageSize),
+        hasMore: messages.length > pageSize,
+      }),
     onError,
   );
 };
 
-// Dates travel as epoch millis; `null` means "send now".
+// Datas trafegam como epoch (ms); `null` significa "enviar agora".
 const toPayload = ({ contactIds, content, scheduledAt }: MessageInput) => ({
   contactIds,
   content: content.trim(),
@@ -78,9 +91,9 @@ const updateMessageCall = callable<MessagePayload & { messageId: string }>(
 export const createMessage = (connectionId: string, input: MessageInput) =>
   createMessageCall({ connectionId, ...toPayload(input) });
 
-/** Only scheduled messages can be edited; the backend enforces it. */
+// Só agendadas podem ser editadas; o backend garante isso.
 export const updateMessage = (messageId: string, input: MessageInput) =>
   updateMessageCall({ messageId, ...toPayload(input) });
 
-/** Removes only the record; it never triggers a new send. */
+// Remove apenas o registro; nunca dispara um novo envio.
 export const deleteMessage = callable<{ messageId: string }>('deleteMessage');

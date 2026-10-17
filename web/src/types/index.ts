@@ -11,7 +11,7 @@ export type Contact = {
   ownerId: string;
   connectionId: string;
   name: string;
-  /** E.164, e.g. +5511912345678 */
+  /** E.164, ex.: +5511912345678 */
   phone: string;
   createdAt: Date | null;
   updatedAt: Date | null;
@@ -34,7 +34,9 @@ export type Message = {
   updatedAt: Date | null;
 };
 
-/** `scheduledAt: null` means "send now". */
+export type MessagePage = { items: Message[]; hasMore: boolean };
+
+/** `scheduledAt: null` significa "enviar agora". */
 export type MessageInput = {
   contactIds: string[];
   content: string;

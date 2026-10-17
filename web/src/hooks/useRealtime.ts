@@ -6,27 +6,32 @@ export type RealtimeState<T> = {
   data: T | undefined;
   error: FirestoreError | null;
   loading: boolean;
+  /** Verdadeiro enquanto exibe dados da chave anterior do mesmo escopo. */
+  updating: boolean;
 };
 
-type Snapshot<T> = { key: string; data?: T; error?: FirestoreError };
+type Snapshot<T> = {
+  key: string;
+  scope: string;
+  data?: T;
+  error?: FirestoreError;
+};
 
-/**
- * Keeps a Firestore listener open while `key` stays the same and closes it on
- * unmount or when `key` changes. Pass `null` to skip subscribing.
- * Results are tagged with the key they belong to, so stale data from a
- * previous key is never shown while the new listener loads.
- */
+// Um listener por `key` (`null` não escuta). Dados da chave anterior só ficam
+// na tela se o `scope` for o mesmo, por exemplo quando só a página cresceu.
 export const useRealtime = <T>(
   key: string | null,
   subscribe: (onData: OnData<T>, onError: OnError) => Unsubscribe,
+  scope: string | null = key,
 ): RealtimeState<T> => {
   const [snapshot, setSnapshot] = useState<Snapshot<T> | null>(null);
-  const startSubscription = useEffectEvent((currentKey: string) =>
-    subscribe(
-      data => setSnapshot({ key: currentKey, data }),
-      error => setSnapshot({ key: currentKey, error }),
-    ),
-  );
+  const startSubscription = useEffectEvent((currentKey: string) => {
+    const currentScope = scope ?? currentKey;
+    return subscribe(
+      data => setSnapshot({ key: currentKey, scope: currentScope, data }),
+      error => setSnapshot({ key: currentKey, scope: currentScope, error }),
+    );
+  });
 
   useEffect(() => {
     if (key === null) return undefined;
@@ -34,9 +39,14 @@ export const useRealtime = <T>(
   }, [key]);
 
   const current = snapshot?.key === key ? snapshot : null;
+  const previous =
+    !current && key !== null && snapshot?.scope === scope && snapshot.data
+      ? snapshot
+      : null;
   return {
-    data: current?.data,
+    data: (current ?? previous)?.data,
     error: current?.error ?? null,
-    loading: key !== null && current === null,
+    loading: key !== null && current === null && previous === null,
+    updating: previous !== null,
   };
 };

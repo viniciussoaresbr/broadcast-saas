@@ -39,9 +39,11 @@ const EMPTY_MESSAGES: Record<MessageFilter, string> = {
 
 type DialogState = { type: 'edit' | 'delete'; message: Message } | null;
 
+const PAGE_SIZE = 30;
+
 const time = (date: Date | null) => date?.getTime() ?? 0;
 
-// Next scheduled first; most recent sent first. Presentation only: the query stays the same.
+// Agendadas: a próxima primeiro; enviadas: a mais recente primeiro.
 const byNextSchedule = (a: Message, b: Message) =>
   time(a.scheduledAt) - time(b.scheduledAt);
 const byLatestSend = (a: Message, b: Message) =>
@@ -95,10 +97,11 @@ const BroadcastPage = () => {
   const { connection, contacts } = useConnectionContext();
   const notify = useFeedback();
   const [filter, setFilter] = useState<MessageFilter>('all');
-  const messages = useMessages(connection.id, filter);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE);
+  const messages = useMessages(connection.id, filter, pageSize);
   const [dialog, setDialog] = useState<DialogState>(null);
   const [composerOpen, setComposerOpen] = useState(false);
-  // Side-by-side composer needs the room of a large screen; below it opens in a dialog.
+  // Abaixo de `lg`, o formulário abre em um diálogo.
   const isWide = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'), {
     noSsr: true,
   });
@@ -176,9 +179,11 @@ const BroadcastPage = () => {
               size="small"
               exclusive
               value={filter}
-              onChange={(_, value: MessageFilter | null) =>
-                value && setFilter(value)
-              }
+              onChange={(_, value: MessageFilter | null) => {
+                if (!value) return;
+                setFilter(value);
+                setPageSize(PAGE_SIZE);
+              }}
               aria-label="Filtrar mensagens"
             >
               {FILTERS.map(({ value, label }) => (
@@ -200,7 +205,7 @@ const BroadcastPage = () => {
         </div>
 
         <ListState
-          state={messages}
+          state={{ ...messages, data: messages.data?.items }}
           empty={
             <EmptyState
               icon={<ForumOutlinedIcon />}
@@ -239,6 +244,17 @@ const BroadcastPage = () => {
             )
           }
         </ListState>
+
+        {messages.data?.hasMore && (
+          <Button
+            variant="outlined"
+            onClick={() => setPageSize(current => current + PAGE_SIZE)}
+            loading={messages.updating}
+            className="self-center"
+          >
+            Carregar mais
+          </Button>
+        )}
       </section>
 
       {!isWide && (
@@ -254,7 +270,7 @@ const BroadcastPage = () => {
             <MessageComposer
               connectionId={connection.id}
               contacts={contactList}
-              onCreated={handleCreated}
+                    onCreated={handleCreated}
               onCancel={() => setComposerOpen(false)}
               titleId="composer-dialog-title"
             />
