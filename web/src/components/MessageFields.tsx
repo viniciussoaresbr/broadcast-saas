@@ -13,7 +13,7 @@ import type {
 import type { Contact } from '../types';
 import { toDateTimeLocalValue } from '../utils/date';
 import { formatPhone } from '../utils/phone';
-import { CONTENT_MAX_LENGTH } from '../utils/validation';
+import { CONTENT_MAX_LENGTH, latestScheduleDate } from '../utils/validation';
 import HintOrError from './HintOrError';
 
 type MessageFieldsProps = {
@@ -22,14 +22,12 @@ type MessageFieldsProps = {
   errors: MessageFormErrors;
   onChange: (patch: Partial<MessageFormValues>) => void;
   disabled?: boolean;
-  /** Prefix for element IDs, so two instances can coexist on a page. */
   idPrefix?: string;
 };
 
 const rowClass =
   'flex cursor-pointer items-center gap-2 py-1 pr-3 pl-1 transition-colors hover:bg-tone-50 has-[:disabled]:cursor-default';
 
-/** Controlled fields shared by the composer and the edit dialog. */
 const MessageFields = ({
   contacts,
   values,
@@ -110,7 +108,6 @@ const MessageFields = ({
             </label>
           ))}
         </div>
-        {/* Always rendered so the error line doesn't shift the form. */}
         <FormHelperText
           id={ids.recipientsError}
           error={Boolean(errors.contactIds)}
@@ -188,6 +185,7 @@ const MessageFields = ({
             inputLabel: { shrink: true },
             htmlInput: {
               min: toDateTimeLocalValue(new Date()),
+              max: toDateTimeLocalValue(latestScheduleDate()),
               className: 'tabular',
             },
           }}
