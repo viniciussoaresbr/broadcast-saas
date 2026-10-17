@@ -67,7 +67,7 @@ const ConnectionPage = () => {
 
   if (connection.loading) return <HeaderSkeleton />;
 
-  // Other tenants' connections are denied by the rules: same message as missing.
+  // Conexões de outro cliente são negadas pelas regras: mesma mensagem de inexistente.
   if (
     connection.error?.code === 'permission-denied' ||
     connection.data === null
@@ -197,7 +197,7 @@ const ConnectionPage = () => {
         />
       </Tabs>
 
-      <Outlet context={context} />
+      <Outlet key={current.id} context={context} />
 
       <ConnectionDialogs dialog={dialog} onClose={() => setDialog(null)} />
     </div>
