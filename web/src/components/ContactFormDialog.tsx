@@ -8,6 +8,7 @@ import {
   validatePhone,
 } from '../utils/validation';
 import FormDialog from './FormDialog';
+import HintOrError from './HintOrError';
 
 export type ContactFormValues = { name: string; phone: string };
 
@@ -65,7 +66,7 @@ const ContactFormDialog = ({
         value={name}
         onChange={event => setName(event.target.value)}
         error={Boolean(errors.name)}
-        helperText={errors.name}
+        helperText={errors.name ?? ' '}
         slotProps={{ htmlInput: { maxLength: NAME_MAX_LENGTH } }}
         required
         autoFocus
@@ -77,7 +78,12 @@ const ContactFormDialog = ({
         value={phone}
         onChange={event => setPhone(formatPhoneInput(event.target.value))}
         error={Boolean(errors.phone)}
-        helperText={errors.phone ?? 'Celular brasileiro com DDD.'}
+        helperText={
+          <HintOrError
+            hint="Celular brasileiro com DDD."
+            error={errors.phone}
+          />
+        }
         slotProps={{
           htmlInput: {
             inputMode: 'tel',

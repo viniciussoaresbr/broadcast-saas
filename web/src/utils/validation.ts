@@ -17,9 +17,7 @@ export const validateName: Validator<string> = value => {
 };
 
 export const validatePhone: Validator<string> = value =>
-  isValidPhone(value)
-    ? null
-    : 'Informe um celular válido com DDD, ex.: (11) 91234-5678.';
+  isValidPhone(value) ? null : 'Informe um celular válido com DDD.';
 
 export const validateEmail: Validator<string> = value =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
