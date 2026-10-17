@@ -7,14 +7,12 @@ import {
 import * as logger from 'firebase-functions/logger';
 
 const PAGE_SIZE = 200;
+// Até 2.000 mensagens por execução; o restante fica para a próxima.
+const MAX_PAGES_PER_RUN = 10;
 
 type ProcessResult = { sent: number; skipped: number; failed: number };
 
-/**
- * Re-reads the message inside a transaction and only marks it as sent if it
- * is still scheduled and due. This makes concurrent or repeated runs safe:
- * a message edited, deleted or already processed in the meantime is skipped.
- */
+// Relê a mensagem em transação: execuções repetidas ou concorrentes não a enviam duas vezes.
 const markAsSent = async (
   db: Firestore,
   doc: QueryDocumentSnapshot,
@@ -69,15 +67,11 @@ const sumResults = (a: ProcessResult, b: ProcessResult): ProcessResult => ({
   failed: a.failed + b.failed,
 });
 
-/**
- * Marks every scheduled message whose `scheduledAt` is not after `now` as
- * sent. Pages through the results with a cursor so a large backlog is
- * processed in bounded chunks.
- */
 export const processDueMessages = async (
   db: Firestore,
   now: Timestamp = Timestamp.now(),
   startAfter?: QueryDocumentSnapshot,
+  pagesLeft = MAX_PAGES_PER_RUN,
 ): Promise<ProcessResult> => {
   const baseQuery = db
     .collection('messages')
@@ -91,8 +85,11 @@ export const processDueMessages = async (
   if (snapshot.empty) return { sent: 0, skipped: 0, failed: 0 };
 
   const pageResult = await processPage(db, snapshot.docs, now);
-  if (snapshot.size < PAGE_SIZE) return pageResult;
+  if (snapshot.size < PAGE_SIZE || pagesLeft <= 1) return pageResult;
 
   const lastDoc = snapshot.docs[snapshot.docs.length - 1];
-  return sumResults(pageResult, await processDueMessages(db, now, lastDoc));
+  return sumResults(
+    pageResult,
+    await processDueMessages(db, now, lastDoc, pagesLeft - 1),
+  );
 };
