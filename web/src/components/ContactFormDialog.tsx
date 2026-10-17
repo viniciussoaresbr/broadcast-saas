@@ -66,7 +66,7 @@ const ContactFormDialog = ({
         value={name}
         onChange={event => setName(event.target.value)}
         error={Boolean(errors.name)}
-        helperText={errors.name ?? ' '}
+        helperText={errors.name ?? `${name.trim().length}/${NAME_MAX_LENGTH}`}
         slotProps={{ htmlInput: { maxLength: NAME_MAX_LENGTH } }}
         required
         autoFocus
