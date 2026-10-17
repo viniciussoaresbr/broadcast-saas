@@ -1,5 +1,5 @@
 import { Firestore, Query } from 'firebase-admin/firestore';
-import { HttpsError } from 'firebase-functions/v2/https';
+import { assertOwned } from './lib/ownership';
 import { connectionIdSchema, parse } from './lib/validation';
 
 const BATCH_SIZE = 400;
@@ -18,11 +18,8 @@ const deleteQueryInBatches = async (
   return snapshot.size + (await deleteQueryInBatches(db, query));
 };
 
-/**
- * Deletes a connection together with its contacts and messages.
- * Dependents are removed first and the connection last, so a failure midway
- * leaves the connection visible and the operation can simply be retried.
- */
+// Marca a conexão como `deleting` antes de remover os dependentes, para que
+// nada novo seja vinculado a ela;
 export const deleteConnection = async (
   db: Firestore,
   uid: string,
@@ -31,10 +28,10 @@ export const deleteConnection = async (
   const { connectionId } = parse(connectionIdSchema, data);
   const ref = db.collection('connections').doc(connectionId);
 
-  const connection = await ref.get();
-  if (!connection.exists || connection.get('ownerId') !== uid) {
-    throw new HttpsError('not-found', 'Conexão não encontrada.');
-  }
+  await db.runTransaction(async tx => {
+    assertOwned(await tx.get(ref), uid, 'Conexão não encontrada.');
+    tx.update(ref, { deleting: true });
+  });
 
   const byConnection = (collection: string) =>
     db
