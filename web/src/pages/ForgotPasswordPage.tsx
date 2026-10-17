@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
@@ -15,7 +15,7 @@ const ForgotPasswordPage = () => {
   const [sent, setSent] = useState(false);
   const { pending, error, run } = useAsyncAction();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const invalidEmail = validateEmail(email);
     setEmailError(invalidEmail);
@@ -45,7 +45,6 @@ const ForgotPasswordPage = () => {
           value={email}
           onChange={event => {
             setEmail(event.target.value);
-            // Re-check while typing only once an error is showing, to clear it.
             if (emailError) setEmailError(validateEmail(event.target.value));
           }}
           onBlur={() => email && setEmailError(validateEmail(email))}

@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -31,7 +31,7 @@ const MessageComposer = ({
   const { pending, error, run } = useAsyncAction();
   const isScheduling = form.values.mode === 'schedule';
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (pending) return;
     const input = form.submit();

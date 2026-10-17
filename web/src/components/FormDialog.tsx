@@ -1,4 +1,4 @@
-import type { FormEvent, ReactNode } from 'react';
+import type { ReactNode, SubmitEvent } from 'react';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -18,12 +18,11 @@ type FormDialogProps = {
   error: string | null;
   onSubmit: () => void;
   onClose: () => void;
-  /** Larger forms: wider dialog that becomes full screen on phones. */
   wide?: boolean;
   children: ReactNode;
 };
 
-/** Dialog shell for create/edit forms. Ignores submits and dismissals while saving. */
+// Ignora envios e fechamentos enquanto salva.
 const FormDialog = ({
   open,
   title,
@@ -41,7 +40,7 @@ const FormDialog = ({
     { noSsr: true },
   );
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!pending) onSubmit();
   };

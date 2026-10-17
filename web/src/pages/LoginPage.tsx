@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
@@ -18,7 +18,7 @@ const LoginPage = () => {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const { pending, error, run } = useAsyncAction();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const invalidEmail = validateEmail(email);
     const missingPassword = password ? null : 'Informe a senha.';
@@ -26,7 +26,7 @@ const LoginPage = () => {
     setPasswordError(missingPassword);
     if (invalidEmail || missingPassword) return;
 
-    // On success, <PublicOnlyRoute> redirects to the private area.
+    // Em caso de sucesso, o <PublicOnlyRoute> redireciona para a área privada.
     await run(() => signIn(email, password));
   };
 
@@ -45,7 +45,6 @@ const LoginPage = () => {
           value={email}
           onChange={event => {
             setEmail(event.target.value);
-            // Re-check while typing only once an error is showing, to clear it.
             if (emailError) setEmailError(validateEmail(event.target.value));
           }}
           onBlur={() => email && setEmailError(validateEmail(email))}

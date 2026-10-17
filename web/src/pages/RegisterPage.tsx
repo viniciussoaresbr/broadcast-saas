@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
@@ -51,13 +51,13 @@ const RegisterPage = () => {
   const setFieldError = (name: keyof Fields, message: string | null) =>
     setErrors(current => ({ ...current, [name]: message }));
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const validation = validate(fields);
     setErrors(validation);
     if (Object.values(validation).some(Boolean)) return;
 
-    // On success, <PublicOnlyRoute> redirects to the private area.
+    // Em caso de sucesso, o <PublicOnlyRoute> redireciona para a área privada.
     await run(() => signUp(fields));
   };
 
@@ -88,7 +88,6 @@ const RegisterPage = () => {
           value={fields.email}
           onChange={event => {
             setField('email')(event.target.value);
-            // Re-check while typing only once an error is showing, to clear it.
             if (errors.email)
               setFieldError('email', validateEmail(event.target.value));
           }}
