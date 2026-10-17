@@ -84,7 +84,7 @@ describe('contacts', () => {
     await expect(createContact(db, ALICE, input)).rejects.toMatchObject({
       code: 'already-exists',
     });
-    // Updating a contact keeping its own phone is allowed.
+    // Editar o contato mantendo o próprio telefone é permitido.
     await expect(
       updateContact(db, ALICE, {
         contactId: id,
@@ -239,6 +239,49 @@ describe('messages', () => {
     ).rejects.toMatchObject({ code: 'invalid-argument' });
   });
 
+  it('rejects too many recipients and dates more than a year ahead', async () => {
+    const { connectionId, contactId } = await setup();
+    await expect(
+      createMessage(db, ALICE, {
+        connectionId,
+        contactIds: Array.from({ length: 501 }, (_, i) => `contact${i}`),
+        content: 'Olá',
+        scheduledAt: null,
+      }),
+    ).rejects.toMatchObject({
+      code: 'invalid-argument',
+      message: 'Selecione até 500 contatos.',
+    });
+
+    await expect(
+      createMessage(db, ALICE, {
+        connectionId,
+        contactIds: [contactId],
+        content: 'Olá',
+        scheduledAt: Date.now() + 400 * 24 * HOUR,
+      }),
+    ).rejects.toMatchObject({
+      code: 'invalid-argument',
+      message: 'Agende para no máximo 1 ano à frente.',
+    });
+  });
+
+  it('rejects malformed payloads with a readable message', async () => {
+    await expect(createMessage(db, ALICE, 'texto')).rejects.toMatchObject({
+      code: 'invalid-argument',
+      message: 'Dados inválidos.',
+    });
+    const { connectionId, contactId } = await setup();
+    await expect(
+      createMessage(db, ALICE, {
+        connectionId,
+        contactIds: [contactId],
+        content: '   ',
+        scheduledAt: null,
+      }),
+    ).rejects.toMatchObject({ message: 'Escreva a mensagem.' });
+  });
+
   it('edits scheduled messages and can turn them into sent', async () => {
     const { connectionId, contactId } = await setup();
     const { id } = await createMessage(db, ALICE, {
@@ -326,6 +369,41 @@ describe('deleteConnection', () => {
       .get();
     expect(remaining.size).toBe(1);
   });
+
+  it('rejects new contacts and messages while the connection is being deleted', async () => {
+    const connectionId = await createConnectionDoc(ALICE);
+    const { id: contactId } = await createContact(db, ALICE, {
+      connectionId,
+      name: 'Maria',
+      phone: '+5511912345678',
+    });
+    // Estado deixado por uma exclusão em andamento ou interrompida.
+    await db.collection('connections').doc(connectionId).update({
+      deleting: true,
+    });
+
+    await expect(
+      createContact(db, ALICE, {
+        connectionId,
+        name: 'João',
+        phone: '+5511987654321',
+      }),
+    ).rejects.toMatchObject({ code: 'failed-precondition' });
+    await expect(
+      createMessage(db, ALICE, {
+        connectionId,
+        contactIds: [contactId],
+        content: 'Olá',
+        scheduledAt: null,
+      }),
+    ).rejects.toMatchObject({ code: 'failed-precondition' });
+
+    // Repetir a exclusão conclui o processo.
+    expect(await deleteConnection(db, ALICE, { connectionId })).toEqual({
+      deletedContacts: 1,
+      deletedMessages: 0,
+    });
+  });
 });
 
 describe('processDueMessages', () => {
@@ -383,5 +461,17 @@ describe('processDueMessages', () => {
       skipped: 0,
       failed: 0,
     });
+  });
+
+  it('stops after the page limit and leaves the rest for the next run', async () => {
+    await Promise.all(
+      Array.from({ length: 201 }, () => insertScheduled(Date.now() - 1000)),
+    );
+    const now = Timestamp.now();
+
+    expect(await processDueMessages(db, now, undefined, 1)).toMatchObject({
+      sent: 200,
+    });
+    expect(await processDueMessages(db, now)).toMatchObject({ sent: 1 });
   });
 });
