@@ -15,12 +15,10 @@ type ConfirmDialogProps = {
   description: ReactNode;
   confirmLabel?: string;
   onConfirm: () => Promise<unknown>;
-  /** Runs after a successful confirmation, before the dialog closes. */
   onConfirmed?: () => void;
   onClose: () => void;
 };
 
-/** Confirmation for destructive actions; stays open and shows the error on failure. */
 const ConfirmDialog = ({
   open,
   title,
@@ -51,7 +49,7 @@ const ConfirmDialog = ({
       <div className="px-6 pt-6">
         <span
           aria-hidden
-          className="grid size-10 place-items-center rounded-xl bg-[var(--mui-palette-error-light)] text-[var(--mui-palette-error-main)]"
+          className="grid size-10 place-items-center rounded-xl bg-(--mui-palette-error-light) text-(--mui-palette-error-main)"
         >
           <DeleteOutlineIcon fontSize="small" />
         </span>

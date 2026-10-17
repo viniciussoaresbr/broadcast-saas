@@ -1,12 +1,7 @@
 import { useRef, useState } from 'react';
 import { getErrorMessage } from '../utils/errors';
 
-/**
- * Tracks pending/error state of an async action. `run` resolves to true when
- * the action succeeded, so callers can close dialogs or reset forms.
- * Calls made while one is running are ignored (resolve to false), so a double
- * click can't submit twice even before `pending` re-renders the button.
- */
+// `run` resolve `true` em caso de sucesso e ignora chamadas enquanto outra está em andamento.
 export const useAsyncAction = () => {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);

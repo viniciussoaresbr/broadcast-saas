@@ -14,14 +14,13 @@ export type ContactFormValues = { name: string; phone: string };
 
 type ContactFormDialogProps = {
   open: boolean;
-  /** Existing contact (phone in E.164) when editing. */
   initialValues?: ContactFormValues;
-  /** Receives the phone already normalized to E.164. */
+  /** Recebe o telefone já normalizado em E.164. */
   onSave: (values: ContactFormValues) => Promise<unknown>;
   onClose: () => void;
 };
 
-/** Mount with a `key` per edited item so the form starts from its values. */
+// Monte com uma `key` por item editado para o formulário iniciar com os valores dele.
 const ContactFormDialog = ({
   open,
   initialValues,

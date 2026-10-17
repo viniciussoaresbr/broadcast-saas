@@ -21,7 +21,6 @@ type ConnectionDialogsProps = {
   onClose: () => void;
 };
 
-/** Create / rename / delete dialogs, shared by the sidebar, the list page and the connection header. */
 const ConnectionDialogs = ({ dialog, onClose }: ConnectionDialogsProps) => {
   const { uid } = useCurrentUser();
   const navigate = useNavigate();

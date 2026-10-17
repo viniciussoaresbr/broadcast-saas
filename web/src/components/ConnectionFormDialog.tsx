@@ -11,7 +11,7 @@ type ConnectionFormDialogProps = {
   onClose: () => void;
 };
 
-/** Mount with a `key` per edited item so the form starts from its values. */
+// Monte com uma `key` por item editado para o formulário iniciar com os valores dele.
 const ConnectionFormDialog = ({
   open,
   initialName = '',

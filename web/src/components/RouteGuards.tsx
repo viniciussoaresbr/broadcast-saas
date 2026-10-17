@@ -4,7 +4,6 @@ import FullPageLoader from './FullPageLoader';
 
 type FromState = { from?: string } | null;
 
-/** Renders child routes only for signed-in users. */
 export const ProtectedRoute = () => {
   const { user, initializing } = useAuth();
   const location = useLocation();
@@ -15,7 +14,6 @@ export const ProtectedRoute = () => {
   return <Outlet />;
 };
 
-/** Login/register screens: signed-in users go back to where they came from. */
 export const PublicOnlyRoute = () => {
   const { user, initializing } = useAuth();
   const location = useLocation();

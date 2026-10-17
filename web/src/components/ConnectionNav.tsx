@@ -23,13 +23,12 @@ import Initials from './Initials';
 import ListSkeleton from './ListSkeleton';
 
 type ConnectionNavProps = {
-  /** `sidebar`: compact rows in the desktop rail. `page`: full-width list on phones. */
+  /** `sidebar`: barra lateral no desktop. `page`: lista em tela cheia no celular. */
   variant: 'sidebar' | 'page';
 };
 
 type MenuState = { anchor: HTMLElement; connection: Connection } | null;
 
-/** The user's connections, with the create / rename / delete entry points. */
 const ConnectionNav = ({ variant }: ConnectionNavProps) => {
   const connections = useConnections();
   const [dialog, setDialog] = useState<ConnectionDialogState>(null);
@@ -90,7 +89,7 @@ const ConnectionNav = ({ variant }: ConnectionNavProps) => {
               className={({ isActive }) =>
                 [
                   'flex min-w-0 items-center gap-3 rounded-lg pr-11 text-ink no-underline transition-colors',
-                  'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-signal',
+                  'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-signal',
                   isSidebar ? 'py-1.5 pl-2' : 'bg-surface py-3 pl-3',
                   isActive
                     ? 'bg-surface font-semibold shadow-[0_0_0_1px_var(--color-tone-200)]'
@@ -117,7 +116,7 @@ const ConnectionNav = ({ variant }: ConnectionNavProps) => {
               className={[
                 'absolute top-1/2 right-1.5 -translate-y-1/2',
                 isSidebar &&
-                  'opacity-0 group-hover:opacity-100 group-has-[[aria-current=page]]:opacity-100 focus-visible:opacity-100 aria-expanded:opacity-100 [@media(hover:none)]:opacity-100',
+                  'opacity-0 group-hover:opacity-100 group-has-aria-[aria-current=page]:opacity-100 focus-visible:opacity-100 aria-expanded:opacity-100 [@media(hover:none)]:opacity-100',
               ]
                 .filter(Boolean)
                 .join(' ')}

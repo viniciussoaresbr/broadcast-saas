@@ -12,7 +12,6 @@ type EditMessageDialogProps = {
   onClose: () => void;
 };
 
-/** Only scheduled messages are editable; they can be rescheduled or sent now. */
 const EditMessageDialog = ({
   message,
   contacts,

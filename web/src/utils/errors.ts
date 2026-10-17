@@ -2,7 +2,7 @@ import { FirebaseError } from 'firebase/app';
 
 const AUTH_MESSAGES: Record<string, string> = {
   'auth/invalid-credential': 'E-mail ou senha incorretos.',
-  // Returned instead of invalid-credential when email enumeration protection is off (e.g. the emulator).
+  // Retornado no lugar de invalid-credential sem a proteção contra enumeração (ex.: emulador).
   'auth/user-not-found': 'E-mail ou senha incorretos.',
   'auth/wrong-password': 'E-mail ou senha incorretos.',
   'auth/invalid-email': 'E-mail inválido.',
@@ -14,7 +14,7 @@ const AUTH_MESSAGES: Record<string, string> = {
   'auth/network-request-failed': 'Falha de conexão. Verifique sua internet.',
 };
 
-// Callable errors whose message is written for the user by the backend.
+// Erros de callables cuja mensagem o backend escreve para o usuário.
 const FUNCTION_CODES_WITH_USER_MESSAGE = new Set([
   'functions/invalid-argument',
   'functions/not-found',
@@ -29,7 +29,7 @@ export const getErrorMessage = (error: unknown): string => {
   if (!(error instanceof FirebaseError)) return GENERIC_MESSAGE;
   if (AUTH_MESSAGES[error.code]) return AUTH_MESSAGES[error.code];
   if (FUNCTION_CODES_WITH_USER_MESSAGE.has(error.code)) {
-    // The SDK appends the HTTP status, e.g. "Conexão não encontrada. [404]".
+    // O SDK acrescenta o status HTTP, ex.: "Conexão não encontrada. [404]".
     return error.message.replace(/\s*\[\d{3}\]$/, '');
   }
   if (error.code === 'permission-denied')

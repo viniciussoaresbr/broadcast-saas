@@ -1,10 +1,10 @@
-/* MUI styles go in the "mui" layer, so Tailwind utilities can override them */
+/* Estilos do MUI na camada "mui", para os utilitários do Tailwind poderem sobrescrevê-los */
 @layer theme, base, mui, components, utilities;
 @import 'tailwindcss';
 
-/* Tailwind reads the tokens MUI emits from theme.ts (cssVariables), so both share one palette. */
+/* O Tailwind usa os tokens que o MUI gera a partir do theme.ts. */
 @theme inline {
-  /* Same breakpoints as MUI, so `md:` classes and useMediaQuery(up('md')) switch together. */
+  /* Mesmos breakpoints do MUI. */
   --breakpoint-sm: 600px;
   --breakpoint-md: 900px;
   --breakpoint-lg: 1200px;
@@ -32,7 +32,6 @@
     color-scheme: light;
   }
 
-  /* Phone numbers and times line up in lists. */
   .tabular {
     font-variant-numeric: tabular-nums;
   }

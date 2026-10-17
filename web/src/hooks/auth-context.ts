@@ -3,7 +3,7 @@ import type { User } from 'firebase/auth';
 
 export type AuthState = {
   user: User | null;
-  /** True until Firebase restores (or not) the previous session. */
+  /** Verdadeiro até o Firebase restaurar (ou não) a sessão anterior. */
   initializing: boolean;
 };
 

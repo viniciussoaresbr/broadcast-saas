@@ -3,11 +3,7 @@ type HintOrErrorProps = {
   error?: string | null;
 };
 
-/**
- * Helper text that shows the error in place of the hint. Both share one grid
- * cell, so the line keeps the height of the taller text whichever one is
- * visible and the form doesn't shift when validation fails.
- */
+// Dica e erro ocupam a mesma célula do grid, então a linha não muda de altura.
 const HintOrError = ({ hint, error }: HintOrErrorProps) => (
   <span className="grid">
     <span className={`col-start-1 row-start-1 ${error ? 'invisible' : ''}`}>

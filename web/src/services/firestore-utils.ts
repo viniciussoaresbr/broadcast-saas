@@ -16,10 +16,7 @@ export type OnError = (error: FirestoreError) => void;
 export const toDate = (value: unknown): Date | null =>
   value instanceof Timestamp ? value.toDate() : null;
 
-/**
- * Reads a document, estimating pending server timestamps so freshly written
- * documents render with a date before the server confirms the write.
- */
+// Estima timestamps pendentes para documentos recém-gravados já exibirem a data.
 export const readDoc = (snapshot: DocumentSnapshot): DocumentData =>
   snapshot.data({ serverTimestamps: 'estimate' }) ?? {};
 
@@ -31,7 +28,6 @@ export const subscribeToQuery = <T>(
 ): Unsubscribe =>
   onSnapshot(query, snapshot => onData(snapshot.docs.map(mapDoc)), onError);
 
-/** Typed wrapper around a Cloud Function callable. */
 export const callable =
   <Request, Response = void>(name: string) =>
   async (data: Request): Promise<Response> => {

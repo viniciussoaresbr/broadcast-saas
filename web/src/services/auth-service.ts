@@ -12,7 +12,6 @@ import { auth } from './firebase';
 
 export type SignUpInput = { name: string; email: string; password: string };
 
-/** Each registered user is a tenant; its UID is the `ownerId` of its data. */
 export const signUp = async ({
   name,
   email,
@@ -24,7 +23,7 @@ export const signUp = async ({
     password,
   );
   await updateProfile(user, { displayName: name.trim() });
-  // updateProfile doesn't notify listeners; reload does, so the name shows up right away.
+  // updateProfile não notifica os listeners; o reload notifica, e o nome aparece na hora.
   await reload(user);
 };
 
@@ -40,9 +39,6 @@ export const signOut = (): Promise<void> => firebaseSignOut(auth);
 export const sendPasswordReset = (email: string): Promise<void> =>
   sendPasswordResetEmail(auth, email.trim());
 
-/**
- * Unlike onAuthStateChanged, this also fires when the signed-in user's data
- * is reloaded (see signUp), not only when the user signs in or out.
- */
+// Diferente do onAuthStateChanged, também dispara quando os dados do usuário são recarregados.
 export const subscribeToAuth = (onChange: (user: User | null) => void) =>
   onIdTokenChanged(auth, onChange);

@@ -7,12 +7,10 @@ import ListSkeleton from './ListSkeleton';
 type ListStateProps<T> = {
   state: RealtimeState<T[]>;
   empty: ReactNode;
-  /** Shown while the first snapshot loads; defaults to skeleton rows. */
   loading?: ReactNode;
   children: (items: T[]) => ReactNode;
 };
 
-/** Shared loading / error / empty handling for realtime lists. */
 const ListState = <T,>({
   state,
   empty,

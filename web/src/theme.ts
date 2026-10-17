@@ -1,13 +1,11 @@
 import { alpha, createTheme } from '@mui/material/styles';
 import { ptBR } from '@mui/material/locale';
 
-// Single source of the design tokens. With `cssVariables` MUI emits them as
-// --mui-* custom properties, which index.css maps onto Tailwind's theme.
+// Fonte única dos tokens: o MUI gera variáveis --mui-* que o index.css repassa ao Tailwind.
 
 const ink = '#15171C';
 const signal = '#C2410C';
 
-// Cool neutral ramp; every gray in the app comes from here.
 const grey = {
   50: '#FAFAFB',
   100: '#F4F5F7',
@@ -51,7 +49,6 @@ export const theme = createTheme(
       fontFamily:
         '"Geist Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
       fontWeightMedium: 500,
-      // Five sizes do all the work: 13 · 14 · 15 · 17 · 24 (plus the auth statement).
       h1: {
         fontSize: '1.5rem',
         fontWeight: 600,
@@ -85,7 +82,7 @@ export const theme = createTheme(
           },
         },
       },
-      // Focus is shown with an outline instead of the ripple.
+      // O foco usa outline em vez do ripple.
       MuiButtonBase: {
         defaultProps: { disableRipple: true },
         styleOverrides: { root: { '&.Mui-focusVisible': focusRing } },
@@ -134,7 +131,7 @@ export const theme = createTheme(
               {
                 borderColor: grey[400],
               },
-            // Ink, not the accent: an orange focus border would read like the crimson error state.
+            // Borda escura no foco: a cor de destaque se confundiria com o estado de erro.
             '&.Mui-focused:not(.Mui-error) .MuiOutlinedInput-notchedOutline': {
               borderColor: ink,
               borderWidth: 1.5,
@@ -296,7 +293,7 @@ export const theme = createTheme(
             borderRadius: 8,
             fontSize: '0.875rem',
             alignItems: 'flex-start',
-            // Tinted fills from the palette, with text dark enough for AA on them.
+            // Fundos da paleta com texto escuro o bastante para contraste AA.
             variants: (
               [
                 ['error', '#FBEDEF', '#8C1B2C', '#B42339'],

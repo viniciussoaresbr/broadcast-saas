@@ -28,7 +28,6 @@ const STEPS = [
   },
 ];
 
-/** Desktop: the list lives in the sidebar, so this is the starting point. */
 const ConnectionsOverview = () => {
   const connections = useConnections();
   const [dialog, setDialog] = useState<ConnectionDialogState>(null);

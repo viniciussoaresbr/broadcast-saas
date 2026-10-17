@@ -5,7 +5,6 @@ import TextField, { type TextFieldProps } from '@mui/material/TextField';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
-/** Password input with a show/hide toggle. */
 const PasswordField = (props: Omit<TextFieldProps, 'type'>) => {
   const [visible, setVisible] = useState(false);
 

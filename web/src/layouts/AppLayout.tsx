@@ -23,7 +23,6 @@ const SkipLink = () => (
   </a>
 );
 
-/** Name and e-mail of the signed-in user, with the sign-out action. */
 const UserPanel = () => {
   const user = useCurrentUser();
   const label = user.displayName || user.email || 'Conta';

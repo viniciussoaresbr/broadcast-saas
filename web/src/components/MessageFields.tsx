@@ -76,7 +76,7 @@ const MessageFields = ({
           }`}
         >
           <label
-            className={`${rowClass} sticky top-0 z-[1] bg-surface shadow-[0_1px_0_var(--color-tone-200)]`}
+            className={`${rowClass} sticky top-0 z-1 bg-surface shadow-[0_1px_0_var(--color-tone-200)]`}
           >
             <Checkbox
               size="small"

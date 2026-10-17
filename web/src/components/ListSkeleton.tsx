@@ -2,11 +2,9 @@ import Skeleton from '@mui/material/Skeleton';
 
 type ListSkeletonProps = {
   rows?: number;
-  /** Accessible label announced while loading. */
   label?: string;
 };
 
-/** Placeholder rows shaped like the lists they stand in for. */
 const ListSkeleton = ({
   rows = 3,
   label = 'Carregando',

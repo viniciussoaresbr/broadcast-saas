@@ -48,8 +48,7 @@ export const subscribeToContacts = (
     onError,
   );
 
-// Writes go through Cloud Functions, which validate ownership and keep the
-// phone unique per connection.
+// Escritas passam pelas Cloud Functions, que validam a propriedade e a unicidade do telefone.
 export const createContact = callable<
   { connectionId: string; name: string; phone: string },
   { id: string }
@@ -61,5 +60,5 @@ export const updateContact = callable<{
   phone: string;
 }>('updateContact');
 
-/** Also removes the contact from scheduled messages (sent ones are kept). */
+// Também remove o contato das mensagens agendadas (as enviadas são mantidas).
 export const deleteContact = callable<{ contactId: string }>('deleteContact');

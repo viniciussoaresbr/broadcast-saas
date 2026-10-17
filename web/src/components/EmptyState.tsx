@@ -5,9 +5,7 @@ type EmptyStateProps = {
   title: string;
   description?: string;
   action?: ReactNode;
-  /** Optional MUI icon element, shown in a soft tile above the title. */
   icon?: ReactNode;
-  /** `plain` drops the tinted background, for use inside an already tinted area. */
   variant?: 'tinted' | 'plain';
 };
 

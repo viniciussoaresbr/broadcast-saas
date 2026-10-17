@@ -4,7 +4,6 @@ import { FeedbackContext } from '../hooks/feedback-context';
 
 type Toast = { key: number; message: string };
 
-/** One snackbar for the whole app; a new message replaces the current one. */
 const FeedbackProvider = ({ children }: { children: ReactNode }) => {
   const [toast, setToast] = useState<Toast | null>(null);
   const notify = (message: string) => setToast({ key: Date.now(), message });

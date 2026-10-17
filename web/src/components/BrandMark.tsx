@@ -3,7 +3,6 @@ type BrandMarkProps = {
   className?: string;
 };
 
-/** The "on air" lamp: a signal dot with two waves. Decorative; pair it with the name. */
 const BrandMark = ({ size = 28, className }: BrandMarkProps) => (
   <svg
     width={size}

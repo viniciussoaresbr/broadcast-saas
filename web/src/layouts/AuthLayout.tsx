@@ -10,7 +10,7 @@ type AuthLayoutProps = {
 
 const AuthLayout = ({ title, subtitle, children }: AuthLayoutProps) => (
   <main className="flex min-h-dvh flex-col items-center justify-center bg-ground px-4 py-10">
-    <div className="w-full max-w-[420px]">
+    <div className="w-full max-w-105">
       <div className="mb-6 flex justify-center">
         <Wordmark />
       </div>

@@ -8,7 +8,7 @@ export const useAuth = (): AuthState => {
   return context;
 };
 
-/** For screens behind <ProtectedRoute>, where a user is guaranteed. */
+// Para telas atrás de <ProtectedRoute>, onde há sempre um usuário.
 export const useCurrentUser = (): User => {
   const { user } = useAuth();
   if (!user)

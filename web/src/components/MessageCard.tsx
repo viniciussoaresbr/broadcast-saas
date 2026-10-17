@@ -20,7 +20,7 @@ const recipientNames = (
   contactsById: Map<string, Contact>,
 ): string =>
   message.contactIds
-    // Sent messages keep their history even if a contact is deleted later.
+    // Enviadas mantêm o histórico mesmo se o contato for excluído depois.
     .map(id => contactsById.get(id)?.name ?? 'Contato excluído')
     .join(', ');
 
@@ -37,7 +37,6 @@ const STATUS = {
   },
 };
 
-/** One broadcast in the history: status, when, what and to whom. */
 const MessageCard = ({
   message,
   contactsById,
@@ -87,7 +86,7 @@ const MessageCard = ({
 
         <p className="m-0 flex items-start gap-1.5 text-[0.8125rem] text-muted">
           <GroupOutlinedIcon aria-hidden sx={{ fontSize: 16, mt: '2px' }} />
-          <span className="min-w-0 break-words">
+          <span className="min-w-0 wrap-break-word">
             <span className="font-medium text-ink">
               {recipientCount}{' '}
               {recipientCount === 1 ? 'destinatário' : 'destinatários'}:

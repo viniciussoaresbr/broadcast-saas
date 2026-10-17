@@ -12,7 +12,6 @@ const initialsOf = (name: string): string => {
   return letters.toUpperCase();
 };
 
-/** Rounded-square monogram for connections and contacts. Decorative: the name is always next to it. */
 const Initials = ({ name, size = 'md' }: InitialsProps) => (
   <span
     aria-hidden

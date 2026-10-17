@@ -51,10 +51,7 @@ export const subscribeToConnections = (
     onError,
   );
 
-/**
- * Emits `null` when the connection does not exist. Security rules deny reads
- * of other tenants' documents, which surfaces as a permission error.
- */
+// Emite `null` se a conexão não existir; a de outro cliente gera erro de permissão.
 export const subscribeToConnection = (
   connectionId: string,
   onData: OnData<Connection | null>,
@@ -66,7 +63,6 @@ export const subscribeToConnection = (
     onError,
   );
 
-/** Resolves to the new connection's ID. */
 export const createConnection = async (
   ownerId: string,
   name: string,
@@ -89,7 +85,7 @@ export const renameConnection = (
     updatedAt: serverTimestamp(),
   });
 
-/** Runs on the backend: removes the connection with its contacts and messages. */
+// Roda no backend: remove a conexão com seus contatos e mensagens.
 export const deleteConnection = callable<
   { connectionId: string },
   { deletedContacts: number; deletedMessages: number }

@@ -8,12 +8,12 @@ export const formatDateTime = (date: Date | null): string =>
 
 const pad = (value: number) => String(value).padStart(2, '0');
 
-/** Value for `<input type="datetime-local">`, in the browser's time zone. */
+// Valor para `<input type="datetime-local">`, no fuso do navegador.
 export const toDateTimeLocalValue = (date: Date): string =>
   `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
   `T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 
-/** A `datetime-local` value without offset is parsed as local time. */
+// Valor `datetime-local` sem offset é interpretado como horário local.
 export const parseDateTimeLocal = (value: string): Date | null => {
   if (!value) return null;
   const date = new Date(value);
@@ -39,7 +39,7 @@ const fullDayFormatter = new Intl.DateTimeFormat('pt-BR', {
 const startOfDay = (date: Date) =>
   new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
-/** Short, relative-aware label: "Hoje, 17:01", "Amanhã, 09:00", "20 de dez., 10:30". */
+// Ex.: "Hoje, 17:01", "Amanhã, 09:00", "20 de dez., 10:30".
 export const formatRelativeDateTime = (
   date: Date | null,
   now = new Date(),

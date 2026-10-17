@@ -1,13 +1,13 @@
-/** Area code + 11 digits, keeping only what the mask needs. */
+// Mantém só os dígitos usados pela máscara (DDD + número).
 export const phoneDigits = (value: string): string => {
   const digits = value.replace(/\D/g, '');
-  // Accept pasted numbers that include the +55 country code.
+  // Aceita números colados com o código +55.
   const local =
     digits.length > 11 && digits.startsWith('55') ? digits.slice(2) : digits;
   return local.slice(0, 11);
 };
 
-/** Formats as the user types: (11) 91234-5678 */
+// Formata enquanto o usuário digita: (11) 91234-5678
 export const formatPhoneInput = (value: string): string => {
   const digits = phoneDigits(value);
   if (digits.length === 0) return '';
@@ -16,7 +16,7 @@ export const formatPhoneInput = (value: string): string => {
   return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
 };
 
-/** Brazilian mobile: area code without zeros, then 9 + 8 digits. */
+// Celular brasileiro: DDD sem zero, depois 9 + 8 dígitos.
 export const isValidPhone = (value: string): boolean =>
   /^[1-9]{2}9\d{8}$/.test(phoneDigits(value));
 

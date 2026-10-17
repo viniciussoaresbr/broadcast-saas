@@ -14,8 +14,6 @@ import { theme } from './theme.ts';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <StyledEngineProvider enableCssLayer>
-      {/* Emotion injects at the top of <head>, so the layer order must come from it too;
-          otherwise "mui" is declared first and loses to Tailwind's preflight. */}
       <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
       <ThemeProvider theme={theme}>
         <CssBaseline />

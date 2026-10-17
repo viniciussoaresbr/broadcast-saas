@@ -48,7 +48,6 @@ const ContactsPage = () => {
     <section className="flex flex-col gap-4" aria-labelledby="contacts-title">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          {/* The tab already shows "Contatos"; the heading stays for screen readers. */}
           <Typography id="contacts-title" variant="h2" className="sr-only">
             Contatos
           </Typography>

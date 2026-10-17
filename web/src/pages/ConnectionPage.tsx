@@ -112,7 +112,7 @@ const ConnectionPage = () => {
 
       <header className="mt-2 flex items-start justify-between gap-4 md:mt-0">
         <div className="min-w-0">
-          <Typography variant="h1" className="break-words">
+          <Typography variant="h1" className="wrap-break-word">
             {current.name}
           </Typography>
           <Typography
