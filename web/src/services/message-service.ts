@@ -24,9 +24,10 @@ const toMessage = (snapshot: DocumentSnapshot): Message => {
     id: snapshot.id,
     ownerId: data.ownerId,
     connectionId: data.connectionId,
-    contactIds: data.contactIds ?? [],
-    content: data.content,
-    status: data.status,
+    contactIds: Array.isArray(data.contactIds) ? data.contactIds : [],
+    content: String(data.content ?? ''),
+    // Valor inesperado é tratado como enviada, que é somente leitura.
+    status: data.status === 'scheduled' ? 'scheduled' : 'sent',
     scheduledAt: toDate(data.scheduledAt),
     sentAt: toDate(data.sentAt),
     createdAt: toDate(data.createdAt),
