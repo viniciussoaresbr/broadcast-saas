@@ -21,6 +21,7 @@ import MessageComposer from '../components/MessageComposer';
 import { useConnectionContext } from '../hooks/useConnectionContext';
 import { useMessages } from '../hooks/useData';
 import { useFeedback } from '../hooks/useFeedback';
+import { useMessageForm } from '../hooks/useMessageForm';
 import { deleteMessage } from '../services/message-service';
 import type { Contact, Message, MessageFilter } from '../types';
 import { getErrorMessage } from '../utils/errors';
@@ -116,6 +117,8 @@ const BroadcastPage = () => {
     contactList.map(contact => [contact.id, contact]),
   );
   const hasContacts = contactList.length > 0;
+  // Fica aqui para o rascunho sobreviver à troca entre painel lateral e diálogo.
+  const composerForm = useMessageForm(contactList.map(contact => contact.id));
 
   const handleCreated = (scheduled: boolean) => {
     setComposerOpen(false);
@@ -151,6 +154,7 @@ const BroadcastPage = () => {
       <MessageComposer
         connectionId={connection.id}
         contacts={contactList}
+        form={composerForm}
         onCreated={handleCreated}
       />
     );
@@ -270,7 +274,8 @@ const BroadcastPage = () => {
             <MessageComposer
               connectionId={connection.id}
               contacts={contactList}
-                    onCreated={handleCreated}
+              form={composerForm}
+              onCreated={handleCreated}
               onCancel={() => setComposerOpen(false)}
               titleId="composer-dialog-title"
             />

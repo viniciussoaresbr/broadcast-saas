@@ -13,7 +13,7 @@ export type MessageFormValues = {
   contactIds: string[];
   content: string;
   mode: DeliveryMode;
-  /** `datetime-local` input value, in the browser's time zone. */
+  /** Valor do input `datetime-local`, no fuso do navegador. */
   scheduledAt: string;
 };
 
@@ -59,11 +59,7 @@ const toInput = (values: MessageFormValues): MessageInput => ({
     values.mode === 'schedule' ? parseDateTimeLocal(values.scheduledAt) : null,
 });
 
-/**
- * Form state for creating or editing a message. `submit` validates and
- * returns the input to send, or null when the form has errors.
- * `availableContactIds` drops selections of contacts that no longer exist.
- */
+// `submit` retorna os dados a enviar, ou `null` se houver erros.
 export const useMessageForm = (
   availableContactIds: string[],
   initialValues: MessageFormValues = EMPTY_VALUES,
@@ -79,7 +75,7 @@ export const useMessageForm = (
 
   const change = (patch: Partial<MessageFormValues>) => {
     setValues(current => ({ ...current, ...patch }));
-    // Clear the error of each field the user touched.
+    // Limpa o erro de cada campo alterado.
     setErrors(current => {
       const next = { ...current };
       Object.keys(patch).forEach(
@@ -102,3 +98,5 @@ export const useMessageForm = (
 
   return { values: currentValues, errors, change, submit, reset };
 };
+
+export type MessageForm = ReturnType<typeof useMessageForm>;

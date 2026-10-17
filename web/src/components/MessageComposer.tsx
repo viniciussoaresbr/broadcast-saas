@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import SendIcon from '@mui/icons-material/Send';
 import { useAsyncAction } from '../hooks/useAsyncAction';
-import { useMessageForm } from '../hooks/useMessageForm';
+import type { MessageForm } from '../hooks/useMessageForm';
 import { createMessage } from '../services/message-service';
 import type { Contact } from '../types';
 import MessageFields from './MessageFields';
@@ -13,21 +13,21 @@ import MessageFields from './MessageFields';
 type MessageComposerProps = {
   connectionId: string;
   contacts: Contact[];
+  /** Fica na página para o rascunho sobreviver à troca de layout. */
+  form: MessageForm;
   onCreated: (scheduled: boolean) => void;
-  /** When given (composer inside a dialog), shows a cancel button. */
   onCancel?: () => void;
-  /** ID of the heading, for dialogs that label themselves with it. */
   titleId?: string;
 };
 
 const MessageComposer = ({
   connectionId,
   contacts,
+  form,
   onCreated,
   onCancel,
   titleId = 'composer-title',
 }: MessageComposerProps) => {
-  const form = useMessageForm(contacts.map(contact => contact.id));
   const { pending, error, run } = useAsyncAction();
   const isScheduling = form.values.mode === 'schedule';
 
