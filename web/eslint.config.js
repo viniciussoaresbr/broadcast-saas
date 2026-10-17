@@ -15,7 +15,7 @@ export default defineConfig([
       tseslint.configs.recommended,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
-      // Last, so it turns off any style rule that conflicts with Prettier.
+      // Por último, para desativar as regras de estilo que conflitam com o Prettier.
       eslintConfigPrettier,
     ],
     languageOptions: {
