@@ -80,7 +80,7 @@ const MessageCard = ({
           )}
         </div>
 
-        <p className="m-0 text-[0.9375rem] leading-relaxed whitespace-pre-wrap break-words text-ink">
+        <p className="m-0 text-[0.9375rem] leading-relaxed whitespace-pre-wrap wrap-break-word text-ink">
           {message.content}
         </p>
 
