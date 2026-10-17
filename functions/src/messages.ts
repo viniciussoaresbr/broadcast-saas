@@ -6,14 +6,12 @@ import {
   getOwnedConnection,
 } from './lib/ownership';
 import {
-  asPayload,
-  parseContactIds,
-  parseContent,
-  parseId,
-  parseScheduledAt,
+  createMessageSchema,
+  messageIdSchema,
+  parse,
+  updateMessageSchema,
 } from './lib/validation';
 
-/** Fields that depend on whether the message is sent now or scheduled. */
 const deliveryFields = (scheduledAt: number | null) =>
   scheduledAt === null
     ? {
@@ -33,11 +31,10 @@ export const createMessage = async (
   data: unknown,
   now = Date.now(),
 ): Promise<{ id: string }> => {
-  const payload = asPayload(data);
-  const connectionId = parseId(payload.connectionId, 'connectionId');
-  const contactIds = parseContactIds(payload.contactIds);
-  const content = parseContent(payload.content);
-  const scheduledAt = parseScheduledAt(payload.scheduledAt, now);
+  const { connectionId, contactIds, content, scheduledAt } = parse(
+    createMessageSchema(now),
+    data,
+  );
   const ref = db.collection('messages').doc();
 
   await db.runTransaction(async tx => {
@@ -57,21 +54,17 @@ export const createMessage = async (
   return { id: ref.id };
 };
 
-/**
- * Only scheduled messages can be edited. Passing `scheduledAt: null` turns
- * the message into an immediate (simulated) send.
- */
+// Só agendadas podem ser editadas; `scheduledAt: null` envia na hora.
 export const updateMessage = async (
   db: Firestore,
   uid: string,
   data: unknown,
   now = Date.now(),
 ): Promise<void> => {
-  const payload = asPayload(data);
-  const messageId = parseId(payload.messageId, 'messageId');
-  const contactIds = parseContactIds(payload.contactIds);
-  const content = parseContent(payload.content);
-  const scheduledAt = parseScheduledAt(payload.scheduledAt, now);
+  const { messageId, contactIds, content, scheduledAt } = parse(
+    updateMessageSchema(now),
+    data,
+  );
   const ref = db.collection('messages').doc(messageId);
 
   await db.runTransaction(async tx => {
@@ -102,14 +95,13 @@ export const updateMessage = async (
   });
 };
 
-/** Deleting only removes the record; it never triggers a new send. */
+// Excluir só remove o registro; nunca dispara um novo envio.
 export const deleteMessage = async (
   db: Firestore,
   uid: string,
   data: unknown,
 ): Promise<void> => {
-  const payload = asPayload(data);
-  const messageId = parseId(payload.messageId, 'messageId');
+  const { messageId } = parse(messageIdSchema, data);
   const ref = db.collection('messages').doc(messageId);
 
   await db.runTransaction(async tx => {

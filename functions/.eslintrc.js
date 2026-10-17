@@ -11,7 +11,6 @@ module.exports = {
     'plugin:import/typescript',
     'google',
     'plugin:@typescript-eslint/recommended',
-    // Last, so it turns off every style rule above that conflicts with Prettier.
     'prettier',
   ],
   parser: '@typescript-eslint/parser',
@@ -19,14 +18,10 @@ module.exports = {
     project: ['tsconfig.json', 'tsconfig.dev.json'],
     sourceType: 'module',
   },
-  ignorePatterns: [
-    '/lib/**/*', // Ignore built files.
-    '/generated/**/*', // Ignore generated files.
-  ],
+  ignorePatterns: ['/lib/**/*', '/generated/**/*'],
   plugins: ['@typescript-eslint', 'import'],
   rules: {
     'import/no-unresolved': 0,
-    // TypeScript already documents parameter and return types.
     'valid-jsdoc': 0,
     'require-jsdoc': 0,
   },

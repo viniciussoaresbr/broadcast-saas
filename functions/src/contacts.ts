@@ -1,7 +1,12 @@
 import { FieldValue, Firestore, Transaction } from 'firebase-admin/firestore';
 import { HttpsError } from 'firebase-functions/v2/https';
 import { assertOwned, getOwnedConnection } from './lib/ownership';
-import { asPayload, parseId, parseName, parsePhone } from './lib/validation';
+import {
+  contactIdSchema,
+  createContactSchema,
+  parse,
+  updateContactSchema,
+} from './lib/validation';
 
 const assertPhoneAvailable = async (
   db: Firestore,
@@ -30,10 +35,7 @@ export const createContact = async (
   uid: string,
   data: unknown,
 ): Promise<{ id: string }> => {
-  const payload = asPayload(data);
-  const connectionId = parseId(payload.connectionId, 'connectionId');
-  const name = parseName(payload.name);
-  const phone = parsePhone(payload.phone);
+  const { connectionId, name, phone } = parse(createContactSchema, data);
   const ref = db.collection('contacts').doc();
 
   await db.runTransaction(async tx => {
@@ -57,10 +59,7 @@ export const updateContact = async (
   uid: string,
   data: unknown,
 ): Promise<void> => {
-  const payload = asPayload(data);
-  const contactId = parseId(payload.contactId, 'contactId');
-  const name = parseName(payload.name);
-  const phone = parsePhone(payload.phone);
+  const { contactId, name, phone } = parse(updateContactSchema, data);
   const ref = db.collection('contacts').doc(contactId);
 
   await db.runTransaction(async tx => {
@@ -74,18 +73,13 @@ export const updateContact = async (
   });
 };
 
-/**
- * Removes the contact from every scheduled message that targets it. A
- * scheduled message left without recipients is deleted. Sent messages are
- * kept untouched as history.
- */
+// Remove o contato das agendadas (sem destinatários, são excluídas); enviadas ficam como histórico.
 export const deleteContact = async (
   db: Firestore,
   uid: string,
   data: unknown,
 ): Promise<void> => {
-  const payload = asPayload(data);
-  const contactId = parseId(payload.contactId, 'contactId');
+  const { contactId } = parse(contactIdSchema, data);
   const ref = db.collection('contacts').doc(contactId);
 
   await db.runTransaction(async tx => {

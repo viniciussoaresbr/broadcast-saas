@@ -1,6 +1,6 @@
 import { Firestore, Query } from 'firebase-admin/firestore';
 import { HttpsError } from 'firebase-functions/v2/https';
-import { asPayload, parseId } from './lib/validation';
+import { connectionIdSchema, parse } from './lib/validation';
 
 const BATCH_SIZE = 400;
 
@@ -28,8 +28,7 @@ export const deleteConnection = async (
   uid: string,
   data: unknown,
 ): Promise<{ deletedContacts: number; deletedMessages: number }> => {
-  const payload = asPayload(data);
-  const connectionId = parseId(payload.connectionId, 'connectionId');
+  const { connectionId } = parse(connectionIdSchema, data);
   const ref = db.collection('connections').doc(connectionId);
 
   const connection = await ref.get();

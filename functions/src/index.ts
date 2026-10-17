@@ -20,10 +20,7 @@ const db = getFirestore();
 
 type Handler<T> = (db: Firestore, uid: string, data: unknown) => Promise<T>;
 
-/**
- * Wraps a handler so it only runs for authenticated users and receives the
- * caller's UID from the verified Auth token (never from the payload).
- */
+// O UID vem do token verificado do Auth, nunca do payload.
 const authenticatedCall = <T>(handler: Handler<T>) =>
   onCall(async (request: CallableRequest) => {
     if (!request.auth) {
