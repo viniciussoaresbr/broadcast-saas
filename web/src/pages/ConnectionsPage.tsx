@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -10,6 +11,7 @@ import ConnectionDialogs, {
 } from '../components/ConnectionDialogs';
 import ConnectionNav from '../components/ConnectionNav';
 import ListSkeleton from '../components/ListSkeleton';
+import type { LandingState } from '../components/RouteGuards';
 import { useConnections } from '../hooks/useData';
 import { getErrorMessage } from '../utils/errors';
 
@@ -87,12 +89,32 @@ const ConnectionsOverview = () => {
   );
 };
 
-const ConnectionsPage = () => {
+const ConnectionsList = () => {
   const isDesktop = useMediaQuery(
     (theme: Theme) => theme.breakpoints.up('md'),
     { noSsr: true },
   );
   return isDesktop ? <ConnectionsOverview /> : <ConnectionNav variant="page" />;
+};
+
+// Logo após o login, abre a primeira conexão da conta; sem conexões, mostra a lista vazia.
+const FirstConnectionRedirect = () => {
+  const connections = useConnections();
+
+  if (connections.loading) return <ListSkeleton label="Carregando conexões" />;
+
+  const first = connections.data?.[0];
+  if (first) return <Navigate to={`/connections/${first.id}`} replace />;
+  return <Navigate to="/connections" replace />;
+};
+
+const ConnectionsPage = () => {
+  const landing = useLocation().state as LandingState;
+  return landing?.openFirstConnection ? (
+    <FirstConnectionRedirect />
+  ) : (
+    <ConnectionsList />
+  );
 };
 
 export default ConnectionsPage;
