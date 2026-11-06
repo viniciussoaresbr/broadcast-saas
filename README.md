@@ -2,7 +2,7 @@
 
 Aplicação de Broadcast em que cada cliente gerencia suas conexões, contatos e mensagens, com envio simulado imediato e agendamento processado automaticamente no backend.
 
-**Aplicação publicada:** https://broadcast-saas-d44c8.web.app
+> **Hospedagem desativada:** o Firebase Hosting do projeto foi desativado e a aplicação não está mais publicada (o endereço https://broadcast-saas-d44c8.web.app não está mais disponível). Para usá-la, execute-a localmente seguindo as instruções em [Executando localmente](#executando-localmente).
 
 > Nenhuma mensagem real é enviada: o "envio" apenas registra a mensagem como enviada.
 
@@ -17,12 +17,12 @@ Aplicação de Broadcast em que cada cliente gerencia suas conexões, contatos e
 
 ## Tecnologias
 
-| Camada         | Stack                                                                    |
-| -------------- | ------------------------------------------------------------------------ |
-| Frontend       | React 19, TypeScript, Vite, React Router, Material UI, Tailwind CSS, Zod |
-| Backend        | Cloud Functions for Firebase (v2, Node 24), Firebase Admin SDK, Zod      |
-| Infraestrutura | Cloud Firestore, Firebase Authentication, Firebase Hosting               |
-| Qualidade      | ESLint, Prettier, Vitest com Firebase Emulator Suite                     |
+| Camada         | Stack                                                                                |
+| -------------- | ------------------------------------------------------------------------------------ |
+| Frontend       | React 19, TypeScript, Vite, React Router, Material UI, Tailwind CSS, Zod             |
+| Backend        | Cloud Functions for Firebase (v2, Node 24), Firebase Admin SDK, Zod                  |
+| Infraestrutura | Cloud Firestore, Firebase Authentication, Firebase Hosting (atualmente desativado)   |
+| Qualidade      | ESLint, Prettier, Vitest com Firebase Emulator Suite                                 |
 
 ## Arquitetura
 
@@ -123,16 +123,18 @@ npm run build --prefix web
 
 ## Deploy
 
+> **Atenção:** o Firebase Hosting está desativado neste projeto. Os comandos de deploy do Hosting abaixo só voltam a funcionar se a hospedagem for reativada no Console do Firebase (ou se o deploy for feito em outro projeto).
+
 O deploy é feito com a Firebase CLI, a partir da raiz, no projeto definido em `.firebaserc`:
 
 ```bash
-firebase deploy --only hosting      # build do web (predeploy) e publicação de web/dist
+firebase deploy --only hosting      # (Hosting desativado) build do web (predeploy) e publicação de web/dist
 firebase deploy --only functions    # lint e build das Functions (predeploy) e publicação
 firebase deploy --only firestore    # regras e índices
-firebase deploy                     # tudo
+firebase deploy                     # tudo (inclui o Hosting)
 ```
 
-- O Hosting serve `web/dist` com fallback de SPA para `/index.html` e cabeçalhos de segurança (CSP, `X-Frame-Options` e outros), definidos em `firebase.json`.
+- Quando ativo, o Hosting serve `web/dist` com fallback de SPA para `/index.html` e cabeçalhos de segurança (CSP, `X-Frame-Options` e outros), definidos em `firebase.json`.
 - O build do frontend lê `web/.env.local`; **não** deixe `VITE_USE_FIREBASE_EMULATORS=true` nele ao publicar.
 - A função agendada exige o plano Blaze e o Cloud Scheduler habilitado.
 - Os limites de validação (tamanho do nome e da mensagem, número de destinatários, prazo de agendamento) estão duplicados em `web/src/utils/validation.ts` e `functions/src/lib/validation.ts`; ao alterar um deles, atualize os dois e publique frontend e Functions.
