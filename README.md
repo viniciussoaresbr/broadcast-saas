@@ -1,6 +1,6 @@
 # Broadcast SaaS
 
-Aplicação de Broadcast em que cada cliente gerencia suas conexões, contatos e mensagens, com envio simulado imediato e agendamento processado automaticamente no backend.
+Projeto de estudo chamado Broadcast em que cada cliente gerencia suas conexões, contatos e mensagens, com envio simulado imediato e agendamento processado automaticamente no backend.
 
 > **Hospedagem desativada:** o Firebase Hosting do projeto foi desativado e a aplicação não está mais publicada (o endereço https://broadcast-saas-d44c8.web.app não está mais disponível). Para usá-la, execute-a localmente seguindo as instruções em [Executando localmente](#executando-localmente).
 
